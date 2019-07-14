@@ -28,10 +28,14 @@ whereas my sentences are just normal paragraphs.
 In a few places I left out a couple of words or sentences that do not 
 make sense in the Java context. In one situation I skipped over almost
 a full page - this is noted in the text. 
-Where necessary inserted a few sentences of my own
-to explain differences between the original and my translated version.
 
-Additionally I translated Haskell style variable names 
+Where necessary I inserted a few sentences of my own
+to explain differences between the original and this version.
+At the end of the article I appended a 
+[personal addendum](#personal-addendum) in which I address 
+a few open questions.
+
+Moreover, I translated Haskell style variable names 
 to longer Java names:
 - `t` became `bst` or `bst1`
 - `t′` became `bst2`
@@ -59,26 +63,32 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Table of Contents  
 
-- [1 Introduction](#1-introduction)
-- [2 A Primer in Property-Based Testing](#2-a-primer-in-property-based-testing)
-- [3 Our Running Example: Binary Search Trees](#3-our-running-example-binary-search-trees)
-- [4 Approaches to Writing Properties](#4-approaches-to-writing-properties)
-  - [4.1 Validity Testing](#41-validity-testing)
-  - [4.2 Postconditions](#42-postconditions)
-  - [4.3 Metamorphic Properties](#43-metamorphic-properties)
-  - [4.4 Inductive Testing](#44-inductive-testing)
-  - [4.5 Model-based Properties](#45-model-based-properties)
-  - [4.6 A Note on Generation](#46-a-note-on-generation)
-- [5 Bug Hunting](#5-bug-hunting)
-  - [5.1 Bug finding effectiveness](#51-bug-finding-effectiveness)
-  - [5.2 Bug finding performance](#52-bug-finding-performance)
-  - [5.3 Lessons](#53-lessons)
-- [6 Discussion](#6-discussion)
+  - [Abstract.](#abstract)
+- [1&nbsp;&nbsp; Introduction](#1nbspnbsp-introduction)
+- [2&nbsp;&nbsp; A Primer in Property-Based Testing](#2nbspnbsp-a-primer-in-property-based-testing)
+- [3&nbsp;&nbsp; Our Running Example: Binary Search Trees](#3nbspnbsp-our-running-example-binary-search-trees)
+- [4&nbsp;&nbsp; Approaches to Writing Properties](#4nbspnbsp-approaches-to-writing-properties)
+  - [4.1&nbsp;&nbsp; Validity Testing](#41nbspnbsp-validity-testing)
+  - [4.2&nbsp;&nbsp; Postconditions](#42nbspnbsp-postconditions)
+  - [4.3&nbsp;&nbsp; Metamorphic Properties](#43nbspnbsp-metamorphic-properties)
+    - [Preservation of Equivalence](#preservation-of-equivalence)
+  - [4.4&nbsp;&nbsp; Inductive Testing](#44nbspnbsp-inductive-testing)
+  - [4.5&nbsp;&nbsp; Model-based Properties](#45nbspnbsp-model-based-properties)
+  - [4.6&nbsp;&nbsp; A Note on Generation](#46nbspnbsp-a-note-on-generation)
+- [5&nbsp;&nbsp; Bug Hunting](#5nbspnbsp-bug-hunting)
+  - [5.1&nbsp;&nbsp; Bug finding effectiveness](#51nbspnbsp-bug-finding-effectiveness)
+    - [Differences between QuickCheck and _jqwik_ Bug Hunting Results](#differences-between-quickcheck-and-_jqwik_-bug-hunting-results)
+  - [5.2&nbsp;&nbsp; Bug finding performance](#52nbspnbsp-bug-finding-performance)
+  - [5.3&nbsp;&nbsp; Lessons](#53nbspnbsp-lessons)
+- [6&nbsp;&nbsp; Discussion](#6nbspnbsp-discussion)
 - [Personal Addendum](#personal-addendum)
   - [Bug Hunting with Unit Tests](#bug-hunting-with-unit-tests)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+### Abstract. 
+
+> Property-based testing tools test software against a _specification_, rather than a set of examples. This tutorial paper presents five generic approaches to writing such specifications (for purely functional code). We discuss the costs, benefits, and bug-finding power of each approach, with reference to a simple example with eight buggy variants. The lessons learned should help the reader to develop effective property-based tests in the future.
 
 ## 1&nbsp;&nbsp; Introduction
 
@@ -1143,7 +1153,7 @@ had actually implemented. That's why the tables below are missing #6 and #7.
 > Invalid test data provokes false positives. Bug #2, which causes invalid trees to be generated as test cases, causes many properties that do not use insert to fail. This is why property `arbitrary_valid` is so important — when it fails, we need not waste time debugging false positives in properties unrelated to the bug. Because of these false positives, we ignore bug #2 in the rest of this discussion.
 
 In the _jqwik_ implementation bug #2 does not make generated trees invalid
-since duplicate keys are not used to begin with.
+since duplicate keys are filtered out from the beginning.
 
 > Model-based properties are effective at finding bugs; each property tests just one operation, and finds every bug in that operation. In fact, the model-based properties together form a complete specification of the code, and so should be expected to find every bug.
 >
@@ -1155,25 +1165,29 @@ since duplicate keys are not used to begin with.
 
 As you can see in the table there is a bit of difference between the 
 QuickCheck results and the properties run with _jqwik_: `Ox` means that
-QuickCheck found a bug where _jqwik_ did not; `Xo` is the other way round. 
-There are several potential causes for the differences:
+QuickCheck found a bug where _jqwik_ did not - 
+`Xo` is the other way round. 
+There are several potential causes for those differences:
 
-- The bugs are only described in prose. Thus my implementations are 
-  probably different than those done by the original authors.
+- In the paper the bugs are only described in prose. 
+  Thus my implementations are probably different than those 
+  done by the original authors.
 - Data generation - especially the distribution of values across the 
   full integer range - differs between QuickCheck and _jqwik_ 
   which can lead to more or less collisions and thus to 
   better or worse bug detection.
 - Some of the properties are not fully specified in the original
-  paper. My interpretation of the property's name might not fit the code.
+  paper. My interpretation of the property's name might not fit 
+  the actual Haskell code.
   
-All in all, however, the results are quite alike and suggest similar
+All in all, however, the results are quite similar and allow the same
 conclusions.
 
 ### 5.2&nbsp;&nbsp; Bug finding performance
 
-The following section is the original text without any changes because
-I haven't replicated the statistical analysis.
+The text in this section is without any changes and without adaptation 
+to the jqwik properties since I have _not_ replicated the 
+statistical analysis. I might do that later, though.
 
 > Hitherto we have discussed which properties can find bugs, given enough testing time. But it also matters how quickly a property can find a bug. We measured the mean time to failure across seven of the eight bugs (omitting bug #2), for every failing postcondition, (non-weak) metamorphic property, and model-based property. Each mean-time-to-failure was measured by testing the property 1,000 times with different random seeds, and taking the mean number of tests needed to provoke the failure. The results are summarized below:
 >
@@ -1201,7 +1215,9 @@ I haven't replicated the statistical analysis.
 > 
 > We saw that some properties must use equivalence to compare values, while other properties must use structural equality. Thus, we need two notions of “equality” for the data structures under test. In fact, it is the equivalence which ought to be exported as the equality instance for binary search trees, because structural equality distinguishes representations that ought to be considered equal outside the abstraction barrier of the abstract data type. Yet we need to use structural equality in some properties, and of course, we want to use the derived Eq instance for the representation datatype for this. So we appear to need two Eq instances for the same type! 
 
-In Java this translates to "we need two `equals` methods for the same type".
+In Java this translates to "we need two `equals` methods for the 
+same type". This is obviously not possible - like you cannot have 
+two Eq instances in Haskell for the same type.
 
 > The solution to this conundrum is to define two types: a data type of representations with a derived structural equality, which is not exported to clients, and a newtype isomorphic to this datatype, which is exported, with an Eq instance which defines equality to be equivalence. This approach does mean that some properties must be inside the abstraction barrier of the data type, and thus must be placed in the same module as the implementation, which may not be desirable as it mixes test code and implementation code. An alternative is to define an Internals module which exports the representation type, and can be imported by test code, but is not used by client modules.
 
