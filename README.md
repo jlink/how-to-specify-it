@@ -59,7 +59,7 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Table of Contents  
 
-- [1&nbsp; Introduction](#1-introduction)
+- [1 Introduction](#1-introduction)
 - [2 A Primer in Property-Based Testing](#2-a-primer-in-property-based-testing)
 - [3 Our Running Example: Binary Search Trees](#3-our-running-example-binary-search-trees)
 - [4 Approaches to Writing Properties](#4-approaches-to-writing-properties)
@@ -80,7 +80,7 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-## 1 Introduction
+## 1&nbsp; Introduction
 
 > Searching for “property-based testing” on Youtube results in a lot of hits. Most of the top 100 consist of talks recorded at developer conferences and meetings, where (mostly) other people than this author present ideas, tools and methods for property-based testing, or applications that make use of it. Clearly, property-based testing is an idea whose time has come. But clearly, it is also poorly understood, requiring explanation over and over again!
 >
@@ -90,7 +90,7 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 >
 > In this paper, therefore, we take a simple — but non-trivial — example of a purely functional data structure, and present five different approaches to writing properties, along with the pitfalls of each to keep in mind. We compare and contrast their effectiveness with the help of eight buggy implementations. We hope that the concrete advice presented here will enable readers to side-step the “where do I start?” question, and quickly derive the benefits that property-based testing has to offer.
 
-## 2 A Primer in Property-Based Testing 
+## 2&nbsp; A Primer in Property-Based Testing 
 
 > Property-based testing is an approach to random testing pioneered by 
 > [QuickCheck in Haskell](http://users.cs.northwestern.edu/~robby/courses/395-495-2009-fall/quick.pdf). 
