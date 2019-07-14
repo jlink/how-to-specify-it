@@ -258,8 +258,8 @@ Arbitrary<BST<Integer, Integer>> trees() {
     Arbitrary<List<Tuple2<Integer, Integer>>> keysAndValues =
             Combinators.combine(keys, values).as(Tuple::of).list();
     
-    // This could be implemented as streaming and reducing
-    // but that'd probably be less understandable
+    // This could be implemented as streaming and reducing but
+    // that would probably be less understandable to the mortal Java dev
     return keysAndValues.map(keyValueList -> {
         BST<Integer, Integer> bst = BST.nil();
         for (Tuple2<Integer, Integer> kv : keyValueList) {
