@@ -1,10 +1,13 @@
 # How to Specify it! in Java!
 
-A couple of days ago [John Hughes](https://twitter.com/rjmh), 
-the most prominent proponent of Property-based Testing, 
+In July 2019 [John Hughes](https://twitter.com/rjmh), 
+unarguably the most prominent proponent of Property-based Testing, 
 published [_How to Specify it!_](https://www.dropbox.com/s/tx2b84kae4bw1p4/paper.pdf).
 In this paper he presents 
-"five generic approaches to writing \[...\] specifications" a.k.a. properties.
+
+> "five generic approaches to writing \[...\] specifications" 
+
+a.k.a. _properties_.
 
 Throughout the paper he uses [QuickCheck in Haskell](http://hackage.haskell.org/package/QuickCheck)
 as tool and language of choice. Since some of my readers are not familiar with Haskell
