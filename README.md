@@ -80,7 +80,7 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-## 1&nbsp; Introduction
+## 1&nbsp;&nbsp; Introduction
 
 > Searching for “property-based testing” on Youtube results in a lot of hits. Most of the top 100 consist of talks recorded at developer conferences and meetings, where (mostly) other people than this author present ideas, tools and methods for property-based testing, or applications that make use of it. Clearly, property-based testing is an idea whose time has come. But clearly, it is also poorly understood, requiring explanation over and over again!
 >
@@ -90,7 +90,7 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 >
 > In this paper, therefore, we take a simple — but non-trivial — example of a purely functional data structure, and present five different approaches to writing properties, along with the pitfalls of each to keep in mind. We compare and contrast their effectiveness with the help of eight buggy implementations. We hope that the concrete advice presented here will enable readers to side-step the “where do I start?” question, and quickly derive the benefits that property-based testing has to offer.
 
-## 2&nbsp; A Primer in Property-Based Testing 
+## 2&nbsp;&nbsp; A Primer in Property-Based Testing 
 
 > Property-based testing is an approach to random testing pioneered by 
 > [QuickCheck in Haskell](http://users.cs.northwestern.edu/~robby/courses/395-495-2009-fall/quick.pdf). 
@@ -202,7 +202,7 @@ Here the `sample` line shows the value of `aList` for which the test failed: (0,
 >
 > Now we have seen the benefits of property-based testing — random generation of very many test cases, and shrinking of counterexamples to minimal failing tests — and the major pitfall: the temptation to replicate the implementation in the tests, incurring high costs for little benefit. In the remainder of this paper, we present systematic ways to define properties without falling into this trap. We will (largely) ignore the question of how to generate effective test cases — that are good at reaching buggy behaviour in the implementation under test — because in the absence of good properties, good generators are of little value.
 
-## 3 Our Running Example: Binary Search Trees
+## 3&nbsp;&nbsp; Our Running Example: Binary Search Trees
 
 > The code we shall develop properties for is an implementation of finite maps (from keys to values) as binary search trees. 
 
@@ -271,9 +271,9 @@ Strictly speaking this would not be necessary for _jqwik_ since the framework
 can randomly choose any type that's compatible with the generic type
 definition. To be closer to the original version I went with `Integer` nonetheless.
 
-## 4 Approaches to Writing Properties
+## 4&nbsp;&nbsp; Approaches to Writing Properties
 
-### 4.1 Validity Testing
+### 4.1&nbsp;&nbsp; Validity Testing
 
 > Like many data-structures, binary search trees satisfy an important invariant— and so we can write properties to test that the invariant is preserved.
 >
@@ -412,7 +412,7 @@ preserved while shrinking.
 >
 > Validity properties are important to test, whenever a datatype has an invariant, but they are far from sufficient by themselves. Consider this: if every function returning a BST were defined to return nil in every case, then all the properties written so far would pass. insert could be defined to delete the key instead, or union could be defined to implement set difference — as long as the invariant is preserved, the properties will still pass. Thus we must move on to properties that better capture the intended behaviour of each operation.
 
-### 4.2 Postconditions
+### 4.2&nbsp;&nbsp; Postconditions
 
 > A postcondition is a property that should be True after a call, or (equivalently, for a pure function) True of its result. Thus we can define properties by asking ourselves “What should be True after calling f ?”. For example, after calling insert, then we should be able to find the key just inserted, and any previously inserted keys with unchanged values.
 
@@ -503,7 +503,7 @@ boolean insert_delete_complete(
 }
 ```
 
-### 4.3 Metamorphic Properties
+### 4.3&nbsp;&nbsp; Metamorphic Properties
 
 > [Metamorphic testing](http://www.cs.hku.hk/research/techreps/document/TR-2017-04.pdf) 
 > is a successful approach to the oracle problem in many contexts. The basic idea is this: even if the expected result of a function call such as `tree.insert(key, value)` may be difficult to predict, we may still be able to express an expected relationship between this result, and the result of a related call. For example, if we insert an additional key into `tree` before calling `insert(key, value)`, we might expect the additional key to be inserted into the result also.
@@ -753,7 +753,7 @@ boolean equivalent_trees_are_equivalent(
 }
 ```
 
-### 4.4 Inductive Testing
+### 4.4&nbsp;&nbsp; Inductive Testing
 
 > Metamorphic properties do not, in general, completely specify the behaviour of the code under test. However, in some cases, a subset of metamorphic properties does form a complete specification. Consider, for example, the following two properties of union:
 
@@ -833,7 +833,7 @@ boolean insert_complete_for_union(
 >           
 > Finally, we note that in these completeness properties, it is vital to check structural equality between trees, and not just equivalence. The whole point is to show that delete and union cannot construct otherwise unreachable shapes of trees, which might provoke bugs in the implementation.
 
-### 4.5 Model-based Properties
+### 4.5&nbsp;&nbsp; Model-based Properties
 
 > In 1972, Hoare published [an approach to proving the correctness of data representations](https://link.springer.com/article/10.1007%2FBF00289507), by relating them to abstract data using an abstraction function. Hoare defines a concrete and abstract implementation for each operation, and then proves that diagrams such as this one commute:
 
@@ -941,7 +941,7 @@ boolean find_model(
 }
 ```
 
-### 4.6 A Note on Generation
+### 4.6&nbsp;&nbsp; A Note on Generation
 
 > Throughout this paper, we have used integers as test data, for both keys and values. This is generally an acceptable choice, although not necessarily ideal. It is useful to measure the distribution of test data, to judge whether or not tests are likely to find bugs efficiently. In this case, many properties refer to one or more keys, and a tree, generated independently. We may therefore wonder, how often does such a key actually occur in an independently generated tree?
 >
@@ -1049,7 +1049,7 @@ boolean unique(@ForAll int x, @ForAll int y) {
 
 > If we were to choose x and y uniformly from the entire range of 64-bit integers, then ~~QuickCheck~~ _jqwik_ would never be able to falsify it, in practice. If we use ~~QuickCheck~~ _jqwik_’s built-in Int generator, then the property fails in around ~~3.3%~~ 0.2% of cases. Using the `keys` generator we have just defined, the property fails in ~~9.3%~~ 1% of cases. The choice of generator should be made on the basis of how important collisions are as test cases.
 
-## 5 Bug Hunting
+## 5&nbsp;&nbsp; Bug Hunting
 
 > To evaluate the properties we have written, we created eight buggy implementations of binary search trees, with bugs ranging from subtle to blatant. These implementations are listed here:
 
@@ -1136,7 +1136,7 @@ had actually implemented. That's why the tables below are missing #6 and #7.
 > We make the following observations.
 
 
-### 5.1 Bug finding effectiveness
+### 5.1&nbsp;&nbsp; Bug finding effectiveness
  
 > Validity properties miss many bugs (five of six), as do “preservation of equivalence” and “completeness of insertion” properties. In contrast, every bug is found by at least one postcondition, metamorphic property, and model-based property.
 >
@@ -1170,7 +1170,7 @@ There are several potential causes for the differences:
 All in all, however, the results are quite alike and suggest similar
 conclusions.
 
-### 5.2 Bug finding performance
+### 5.2&nbsp;&nbsp; Bug finding performance
 
 The following section is the original text without any changes because
 I haven't replicated the statistical analysis.
@@ -1188,12 +1188,12 @@ I haven't replicated the statistical analysis.
 > Digging a little deeper, for the same bug in union, `prop_UnionPost` fails after 50 tests on average, while `prop_UnionModel` fails after only 8.4 tests, even though they are logically equivalent. The reason is that after computing a union that is affected by the bug, the model-based property checks that the model of the result is correct — which requires every key and value to be correct. The post-condition, on the other hand, checks that a random key has the correct value in the result. Thus `prop_UnionPost` may exercise the bug many times without detecting it. Each model-based test may take a little longer to run, because it validates the result of union more thoroughly, but this is not significant compared to the enormous difference in the number of tests required to find the bug.
 >
 
-### 5.3 Lessons
+### 5.3&nbsp;&nbsp; Lessons
 
 > These results suggest that, if time is limited, then writing model-based properties may offer the best return on investment, in combination with validity properties to ensure we don’t encounter confusing failures caused by invalid data. In situations where the model is complex (and thus expensive) to define, or where the model resembles the implementation so closely that the same bugs are likely in each, then metamorphic properties offer an effective alternative, at the cost of writing many more properties.
 >
 
-## 6 Discussion
+## 6&nbsp;&nbsp; Discussion
 
 > We have discussed a number of different kinds of property that a developer can try to formulate to test an implementation: invariant properties, postconditions, metamorphic properties, inductive properties, and model-based properties. Each kind of property is based on a widely applicable idea, usable in many different settings. When writing metamorphic properties, we discovered the need to define equivalence of data structures, and thus also to define properties that test for preservation of equivalence. We discussed the importance of completeness — our test data generator should be able to generate any test case — and saw how to test this. We saw the importance of testing both our generators and our shrinkers, to ensure that other properties are tested with valid data. We saw how to measure the distribution of test data, to ensure that test effort is well spent.
 >
