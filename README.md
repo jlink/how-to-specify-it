@@ -64,23 +64,23 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 ## Table of Contents  
 
   - [Abstract.](#abstract)
-- [1&nbsp;&nbsp; Introduction](#1nbspnbsp-introduction)
-- [2&nbsp;&nbsp; A Primer in Property-Based Testing](#2nbspnbsp-a-primer-in-property-based-testing)
-- [3&nbsp;&nbsp; Our Running Example: Binary Search Trees](#3nbspnbsp-our-running-example-binary-search-trees)
-- [4&nbsp;&nbsp; Approaches to Writing Properties](#4nbspnbsp-approaches-to-writing-properties)
-  - [4.1&nbsp;&nbsp; Validity Testing](#41nbspnbsp-validity-testing)
-  - [4.2&nbsp;&nbsp; Postconditions](#42nbspnbsp-postconditions)
-  - [4.3&nbsp;&nbsp; Metamorphic Properties](#43nbspnbsp-metamorphic-properties)
+- [1&nbsp;&nbsp; Introduction](#1-introduction)
+- [2&nbsp;&nbsp; A Primer in Property-Based Testing](#2-a-primer-in-property-based-testing)
+- [3&nbsp;&nbsp; Our Running Example: Binary Search Trees](#3-our-running-example-binary-search-trees)
+- [4&nbsp;&nbsp; Approaches to Writing Properties](#4-approaches-to-writing-properties)
+  - [4.1&nbsp;&nbsp; Validity Testing](#41-validity-testing)
+  - [4.2&nbsp;&nbsp; Postconditions](#42-postconditions)
+  - [4.3&nbsp;&nbsp; Metamorphic Properties](#43-metamorphic-properties)
     - [Preservation of Equivalence](#preservation-of-equivalence)
-  - [4.4&nbsp;&nbsp; Inductive Testing](#44nbspnbsp-inductive-testing)
-  - [4.5&nbsp;&nbsp; Model-based Properties](#45nbspnbsp-model-based-properties)
-  - [4.6&nbsp;&nbsp; A Note on Generation](#46nbspnbsp-a-note-on-generation)
-- [5&nbsp;&nbsp; Bug Hunting](#5nbspnbsp-bug-hunting)
-  - [5.1&nbsp;&nbsp; Bug finding effectiveness](#51nbspnbsp-bug-finding-effectiveness)
+  - [4.4&nbsp;&nbsp; Inductive Testing](#44-inductive-testing)
+  - [4.5&nbsp;&nbsp; Model-based Properties](#45-model-based-properties)
+  - [4.6&nbsp;&nbsp; A Note on Generation](#46-a-note-on-generation)
+- [5&nbsp;&nbsp; Bug Hunting](#5-bug-hunting)
+  - [5.1&nbsp;&nbsp; Bug finding effectiveness](#51-bug-finding-effectiveness)
     - [Differences between QuickCheck and _jqwik_ Bug Hunting Results](#differences-between-quickcheck-and-_jqwik_-bug-hunting-results)
-  - [5.2&nbsp;&nbsp; Bug finding performance](#52nbspnbsp-bug-finding-performance)
-  - [5.3&nbsp;&nbsp; Lessons](#53nbspnbsp-lessons)
-- [6&nbsp;&nbsp; Discussion](#6nbspnbsp-discussion)
+  - [5.2&nbsp;&nbsp; Bug finding performance](#52-bug-finding-performance)
+  - [5.3&nbsp;&nbsp; Lessons](#53-lessons)
+- [6&nbsp;&nbsp; Discussion](#6-discussion)
 - [Personal Addendum](#personal-addendum)
   - [Bug Hunting with Unit Tests](#bug-hunting-with-unit-tests)
 
@@ -94,7 +94,7 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 
 > Searching for “property-based testing” on Youtube results in a lot of hits. Most of the top 100 consist of talks recorded at developer conferences and meetings, where (mostly) other people than this author present ideas, tools and methods for property-based testing, or applications that make use of it. Clearly, property-based testing is an idea whose time has come. But clearly, it is also poorly understood, requiring explanation over and over again!
 >
-> We have found that many developers trying property-based testing for the first time find it difficult to identify properties to write — and find the simple examples in tutorials difficult to generalize. 
+> We have found that many developers trying property-based testing for the first time find it difficult to identify _properties to write_ — and find the simple examples in tutorials difficult to generalize. 
 > This is known as the [oracle problem](http://www0.cs.ucl.ac.uk/staff/m.harman/tse-oracle.pdf), 
 > and it is common to all approaches that use test case generation.
 >
@@ -108,7 +108,7 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 > > ‘Historically the definition of property-based testing has been “The thing that QuickCheck does”.’
 > The basic idea has been reimplemented many times — Wikipedia currently lists more than 50 implementations, in 36 different programming languages3, of all programming paradigms. These implementations vary in quality and features, but the ideas in this paper should be relevant to a user of any of them.
 >
-> Suppose, then, that we need to test the reverse function on lists. 
+> Suppose, then, that we need to test the `reverse` function on lists. 
 
 Since JDK's `Collections.reverse` method changes the original list in place we'll wrap it with a copying method. So here's the reverse method
 that we actually use for testing:
@@ -136,7 +136,7 @@ to return a boolean value to state success or failure of a test. For
 more complicated checks the assertion style of most Java test libraries
 is also supported.
 
-> This test is written in the same form as most test cases worldwide: we apply the function under test (reverse) to known arguments (1,2,3), and then com- pare the result to a known expected value (3,2,1). Developers are practiced in coming up with these examples, and predicting expected results. But what happens when we try to write a property instead?
+> This test is written in the same form as most test cases worldwide: we apply the function under test (`reverse`) to known arguments (1,2,3), and then compare the result to a known expected value (3,2,1). Developers are practiced in coming up with these examples, and predicting expected results. But what happens when we try to write a property instead?
 
 ```java
 @Property
@@ -147,7 +147,7 @@ boolean reverseList(@ForAll List<Integer> aList) {
 
 > The property is parameterised on `aList`, which will be randomly generated by ~~QuickCheck~~ _jqwik_ \[...\].
 >
-> The property can clearly test reverse in a much wider range of cases than the unit test — any randomly generated list, rather than just the list [1,2,3] — which is a great advantage. But the question is: what is the expected result? That is, what should we replace `???` by in the definition above? Since the argument to reverse is not known in advance, we cannot precompute the expected result. We could write test code to predict it, as in
+> The property can clearly test `reverse` in a much wider range of cases than the unit test — any randomly generated list, rather than just the list [1,2,3] — which is a great advantage. But the question is: _what is the expected result_? That is, what should we replace `???` by in the definition above? Since the argument to `reverse` is not known in advance, we cannot precompute the expected result. We could write test code to _predict_ it, as in
 
 ```java
 @Property
@@ -156,11 +156,11 @@ boolean reverseList(@ForAll List<Integer> aList) {
 } 
 ```
 
-> but `predictRev` is not easier to write than reverse — it is exactly the same function!
+> but `predictRev` _is not easier to write than reverse_ — it is _exactly the same function_!
 >
-> This is the most obvious approach to writing properties — to replicate the implementation in the test code — and it is deeply unsatisfying. It is both an expensive approach, because the replica of the implementation may be as complex as the implementation under test, and of low value, because there is a grave risk that misconceptions in the implementation will be replicated in the test code. “Expensive” and “low value” is an unfortunate combination of characteristics for a software testing method, and all too often leads developers to abandon property-based testing altogether.
+> This is the most obvious approach to writing properties — to replicate the implementation in the test code — and it is deeply unsatisfying. It is both an _expensive_ approach, because the replica of the implementation may be as complex as the implementation under test, and of _low value_, because there is a grave risk that misconceptions in the implementation will be replicated in the test code. “Expensive” and “low value” is an unfortunate combination of characteristics for a software testing method, and all too often leads developers to abandon property-based testing altogether.
 >
-> We can finesse the problem by rewriting the property so that it does not refer to an expected result, instead checking some property of the result. For example, reverse is its own inverse:
+> We can finesse the problem by rewriting the property so that it does not refer to an expected result, instead checking some _property_ of the result. For example, `reverse` is its own inverse:
 
 ```java
 @Property
@@ -178,7 +178,7 @@ tries = 1000         | # of calls to property
 checks = 1000        | # of not rejected calls
 ```
 
-> We have met our goal of testing reverse on 1000 random lists, but this property is not very strong — if we had accidentally defined
+> We have met our goal of testing `reverse` on 1000 random lists, but this property is not very strong — if we had accidentally defined
 
 ```java
 List<T> reverse(List<T> list) {
@@ -188,8 +188,7 @@ List<T> reverse(List<T> list) {
 
 > then it would still pass (whereas the unit test above would report a bug).
 > 
-> We can define another property that this buggy implementation of reverse
-passes, but the correct definition fails:
+> We can define another property that this _buggy_ implementation of `reverse` passes, but the correct definition fails:
 
 ```java
 @Property
@@ -208,9 +207,9 @@ sample = [[0, -1]]
 
 Here the `sample` line shows the value of `aList` for which the test failed: (0, -1).
 
-> Interestingly, the counterexample ~~QuickCheck~~ _jqwik_ reports for this property is always (0, -1) or (0, 1). These are not the random counterexamples that ~~QuickCheck~~ _jqwik_ finds first; they are the result of shrinking the random counterexamples via a systematic greedy search for a simpler failing test. Shrinking lists tries to remove elements, and numbers shrink towards zero; the reason we see these two counterexamples is that `aList` must contain at least two different elements to falsify the property, and 0 and 1/-1 are the smallest pair of different integers. Shrinking is one of the most useful features of property-based testing, resulting in counterexamples which are usually easy to debug, because every part of the counterexample is relevant to the failure.
+> Interestingly, the counterexample ~~QuickCheck~~ _jqwik_ reports for this property is always (0, -1) or (0, 1). These are not the random counterexamples that ~~QuickCheck~~ _jqwik_ finds first; they are the result of _shrinking_ the random counterexamples via a systematic greedy search for a simpler failing test. Shrinking lists tries to remove elements, and numbers shrink towards zero; the reason we see these two counterexamples is that `aList` must contain at least two different elements to falsify the property, and 0 and 1/-1 are the smallest pair of different integers. Shrinking is one of the most useful features of property-based testing, resulting in counterexamples which are usually easy to debug, because _every part_ of the counterexample is relevant to the failure.
 >
-> Now we have seen the benefits of property-based testing — random generation of very many test cases, and shrinking of counterexamples to minimal failing tests — and the major pitfall: the temptation to replicate the implementation in the tests, incurring high costs for little benefit. In the remainder of this paper, we present systematic ways to define properties without falling into this trap. We will (largely) ignore the question of how to generate effective test cases — that are good at reaching buggy behaviour in the implementation under test — because in the absence of good properties, good generators are of little value.
+> Now we have seen the benefits of property-based testing — random generation of very many test cases, and shrinking of counterexamples to minimal failing tests — and the major pitfall: the temptation to replicate the implementation in the tests, incurring high costs for little benefit. In the remainder of this paper, we present systematic ways to define properties _without_ falling into this trap. We will (largely) ignore the question of how to generate _effective_ test cases — that are good at reaching buggy behaviour in the implementation under test — because in the absence of good properties, good generators are of little value.
 
 ## 3&nbsp;&nbsp; Our Running Example: Binary Search Trees
 
