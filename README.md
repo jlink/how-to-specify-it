@@ -21,8 +21,8 @@ John's original text is formatted
 
 whereas my sentences are just normal paragraphs.
 
-I'll sometimes left out a few words or 
-sentences that do not fit the Java context.
+I sometimes left out a few words or 
+sentences that do not make sense in the Java context.
 Additionally I translated Haskell style variable names to longer Java names:
 - `t` became `bst` or `bst1`
 - `t′` became `bst2`
