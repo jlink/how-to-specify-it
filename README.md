@@ -59,7 +59,7 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Table of Contents  
 
-- [1 Introduction](#1-introduction)
+- [1&nbsp; Introduction](#1-introduction)
 - [2 A Primer in Property-Based Testing](#2-a-primer-in-property-based-testing)
 - [3 Our Running Example: Binary Search Trees](#3-our-running-example-binary-search-trees)
 - [4 Approaches to Writing Properties](#4-approaches-to-writing-properties)
