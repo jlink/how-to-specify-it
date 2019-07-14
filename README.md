@@ -10,23 +10,29 @@ In this paper he presents
 a.k.a. _properties_.
 
 Throughout the paper he uses [QuickCheck in Haskell](http://hackage.haskell.org/package/QuickCheck)
-as tool and language of choice. Since some of my readers are not familiar with Haskell
-I want to transfer the examples into Java using [jqwik](https://jqwik.net)
-as property testing library. 
+as tool and language of choice. Since quite some developers are not
+familiar with Haskell I want to transfer the examples into Java 
+using [jqwik](https://jqwik.net) as property testing library. 
 [John was kind enough](https://twitter.com/rjmh/status/1147034204439490560) 
-to allow me to use _his text_ enriched by my examples. The paper is published under [CC-BY license](https://creativecommons.org/licenses/by/2.0/) which also holds for my "remix".
+to allow me to use _his text_ enriched by my examples. His paper is published under [CC-BY license](https://creativecommons.org/licenses/by/2.0/) and so is my "remix".
+
 
 #### Changes I made to the original text
 
-John's original text is formatted 
+John's original text
 
-> as a quotation. 
+> is formatted as quotation, 
 
 whereas my sentences are just normal paragraphs.
 
-I sometimes left out a few words or 
-sentences that do not make sense in the Java context.
-Additionally I translated Haskell style variable names to longer Java names:
+In a few places I left out a couple of words or sentences that do not 
+make sense in the Java context. In one situation I skipped over almost
+a full page - this is noted in the text. 
+Where necessary inserted a few sentences of my own
+to explain differences between the original and my translated version.
+
+Additionally I translated Haskell style variable names 
+to longer Java names:
 - `t` became `bst` or `bst1`
 - `t′` became `bst2`
 - `k` became `key` or `key1`
@@ -34,14 +40,12 @@ Additionally I translated Haskell style variable names to longer Java names:
 - `v` became `value` or `value1`
 - `v′` became `value2`
  
-I also replaced some terms like ~~QuickCheck~~ with _jqwik_ where 
-applicable. Moreover, I changed text references to names in code 
-examples to the names used in the Java code.
+I also replaced some terms like ~~QuickCheck~~ with _jqwik_ by 
+striking through the original. 
+Moreover, whenever the floating text referenced variables or functions
+from the code I used the names from the Java code.
 
-Where necessary inserted a few sentences of my own
-to explain differences between the original and my translated version.
-
-I turned the list of references at the end of the paper into links
+I turned the end notes of references into links
 pointing to PDF versions of the referenced paper. In the one case
 where I could not find a publicly available PDF I reference the 
 publisher's library entry.
