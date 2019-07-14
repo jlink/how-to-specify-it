@@ -1,4 +1,4 @@
-# How to Specify it! in Java!
+# How to Specify it! In Java!
 
 In July 2019 [John Hughes](https://twitter.com/rjmh), 
 unarguably the most prominent proponent of Property-based Testing, 
@@ -52,7 +52,7 @@ publisher's library entry.
 
 #### The Code
 
-You can find [all the code on github](https://github.com/jlink/how-to-specify-it).
+You can find [all the code on github](https://github.com/jlink/how-to-specify-it/tree/master/src).
 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -207,7 +207,7 @@ Here the `sample` line shows the value of `aList` for which the test failed: (0,
 > The code we shall develop properties for is an implementation of finite maps (from keys to values) as binary search trees. 
 
 Here's the public interface of class 
-[`BST`](https://github.com/jlink/property-based-testing/blob/master/pbt-java/src/test/java/how_to_specify_it/bst/BST.java):
+[`BST`](https://github.com/jlink/how-to-specify-it/blob/master/src/test/java/htsi/bst/BST.java):
 
 ```java
 public class BST<K extends Comparable<K>, V> {
@@ -278,7 +278,7 @@ definition. To be closer to the original version I went with `Integer` nonethele
 > Like many data-structures, binary search trees satisfy an important invariant— and so we can write properties to test that the invariant is preserved.
 >
 > In this case the invariant is captured by the 
-> [following function](https://github.com/jlink/property-based-testing/blob/master/pbt-java/src/test/java/how_to_specify_it/bst/BSTValidity.java#L8):
+> [following function](https://github.com/jlink/how-to-specify-it/blob/master/src/test/java/htsi/bst/BSTUtils.java#L9):
 
 ```java
 boolean isValid(BST bst) {
@@ -291,7 +291,7 @@ boolean isValid(BST bst) {
              && keys(bst.right()).allMatch(k -> k.compareTo(bst.key()) > 0);
 }
 ```
-I spare you the clumsy generic Java types and the implementation of method `keys`. 
+I spare you the clumsy generic Java types and the implementation of method `keys` and `isValid(Optional<BST>)`. 
 
 > That is, all the keys in a left subtree must be less than the key in the node, and all the keys in the right subtree must be greater.
 >
@@ -639,7 +639,7 @@ boolean insert_union(
 }
 ```
 
-> and, in a similar way, metamorphic properties for the other functions in the API under test. We derived sixteen different properties in this way, which are ~~listed in Appendix A~~ [available on Github](https://github.com/jlink/property-based-testing/blob/master/pbt-java/src/test/java/how_to_specify_it/bst/BST_Properties.java#L137). The trickiest case is union, which as a binary operation, can have either argument modified — or both. We also found that some properties could be motivated in more than one way. For example, property `insert_union` (above) can be motivated as a metamorphic test for insert, in which the argument is modified by union, or as a metamorphic test for union, in which the argument is modified by insert. Likewise, the metamorphic tests we wrote for find replicated the postconditions we wrote above for insert, delete and union. We do not see this as a problem: that there is more than one way to motivate a property does not make it any less useful, or any harder to come up with!
+> and, in a similar way, metamorphic properties for the other functions in the API under test. We derived sixteen different properties in this way, which are ~~listed in Appendix A~~ [available on Github](https://github.com/jlink/how-to-specify-it/blob/master/src/test/java/htsi/bst/BST_Properties.java#L133). The trickiest case is union, which as a binary operation, can have either argument modified — or both. We also found that some properties could be motivated in more than one way. For example, property `insert_union` (above) can be motivated as a metamorphic test for insert, in which the argument is modified by union, or as a metamorphic test for union, in which the argument is modified by insert. Likewise, the metamorphic tests we wrote for find replicated the postconditions we wrote above for insert, delete and union. We do not see this as a problem: that there is more than one way to motivate a property does not make it any less useful, or any harder to come up with!
 
 
 #### Preservation of Equivalence
@@ -1268,7 +1268,7 @@ the kind of unit tests I usually write at detecting bugs.
 
 Initially, I had created the class `BST` using test-driven development
 before I started to apply all the different kind properties. You can find the resulting suite of unit tests 
-[here](https://github.com/jlink/how-to-specify-it/master/pbt-java/src/test/java/htsi/bst/BST_Tests.java). 
+[here](https://github.com/jlink/how-to-specify-it/blob/master/src/test/java/htsi/bst/BST_Tests.javaa). 
 Those tests did _not_ lead me to a bug-free implementation; the most 
 serious error I had made was in the deletion code in which full subtrees
 could sometimes get lost. So writing and running the properties
