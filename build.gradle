@@ -1,0 +1,37 @@
+repositories {
+	mavenCentral()
+	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+
+ext.junitPlatformVersion = '1.5.0'
+ext.junitJupiterVersion = '5.5.0'
+ext.jqwikVersion = '1.2.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+compileTestJava {
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+	options.compilerArgs += '-parameters'
+}
+
+test {
+	useJUnitPlatform()
+
+	include '**/*Properties.class'
+	include '**/*Test.class'
+	include '**/*Tests.class'
+}
+
+dependencies {
+	testImplementation("org.assertj:assertj-core:3.12.2")
+	testImplementation "net.jqwik:jqwik:${jqwikVersion}"
+
+	// For Jupiter tests and also necessary to work around some IntelliJ bugs
+	testImplementation("org.junit.jupiter:junit-jupiter:${junitJupiterVersion}")
+}
+
+wrapper {
+	description = 'Generates gradlew[.bat] scripts'
+	gradleVersion = '5.5.1'
+}
