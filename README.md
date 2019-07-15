@@ -40,7 +40,7 @@ to longer Java names:
 - `t` became `bst` or `bst1`
 - `t′` became `bst2`
 - `k` became `key` or `key1`
-- `k′` became `key2`
+- `k′` became `otherKey` or `key2`
 - `v` became `value` or `value1`
 - `v′` became `value2`
  
@@ -441,7 +441,7 @@ boolean insert_post(
 }
 ```
 
-> One may wonder whether it is best to parameterize this property on two different keys, or just on one: after all, for the type chosen, k and k′ are equal in only around 3.3% of tests, so most test effort is devoted to checking that other keys than the one inserted are preserved. However, using the same key for k and k′ would weaken the property drastically — for example, an implementation of insert that discarded the original tree entirely would still pass. Moreover, nothing hinders us from defining and testing a specialized property:
+> One may wonder whether it is best to parameterize this property on two different keys, or just on one: after all, for the type chosen, `key` and `otherKey` are equal in only around 3.3% of tests, so most test effort is devoted to checking that other keys than the one inserted are preserved. However, using the same key for `key` and `otherKey` would weaken the property drastically — for example, an implementation of insert that discarded the original tree entirely would still pass. Moreover, nothing hinders us from defining and testing a specialized property:
 
 ```java
 @Property
