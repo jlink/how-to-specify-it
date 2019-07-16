@@ -1,8 +1,9 @@
 # How to Specify it! In Java!
 
 In July 2019 [John Hughes](https://twitter.com/rjmh), 
-unarguably the most prominent proponent of Property-based Testing, 
-published [_How to Specify it!_](https://www.dropbox.com/s/tx2b84kae4bw1p4/paper.pdf).
+unarguably one of the most prominent practitioners of 
+Property-based Testing, published 
+[_How to Specify it!_](https://www.dropbox.com/s/tx2b84kae4bw1p4/paper.pdf).
 In this paper he presents 
 
 > "five generic approaches to writing \[...\] specifications" 
@@ -413,9 +414,10 @@ At this point
 there is almost a full page discussing problems in shrinking that lead
 to invalid shrunk data. However, this is not an issue in _jqwik's_
 implementation. In general, _jqwik_ supports
-[integrated shrinking](https://jqwik.net/docs/current/user-guide.html#integrated-shrinking);
-thereby all preconditions added during data generation will also be
-preserved while shrinking. 
+[integrated shrinking](https://jqwik.net/docs/current/user-guide.html#integrated-shrinking) which ensures
+that all preconditions used during data generation will also be
+preserved while shrinking. In addition shrinkers are directly derived 
+from generators and must not be implemented separately.
 
 > This section illustrates well the importance of testing our tests; it is vital to test generators and shrinkers independently of the operations under test, because a bug in either can result in very many hard-to-debug failures in other properties.
 >
@@ -531,7 +533,7 @@ boolean insert_insert(
 }
 ```
 
-> Informally, we expect the effect of inserting `key1` `value1` into t before calling `insert(key2,value2)`, to be that they are also inserted into the result. A metamorphic property (almost) always relates two calls to the function under test: in this case, the function under test is insert, and the two calls are `bst.insert(key2, value2)` and `bst.insert(key1, value1).insert(key2, value2)`. The latter is constructed by modifying the argument, in this case also using insert, and the property expresses an expected relationship between the values of the two calls. Metamorphic testing is a fruitful source of property ideas, since if we are given O(n) operations to test, each of which can also be used as a modifier, then there are potentially O(n<sup>2</sup>) properties that we can define.
+> Informally, we expect the effect of inserting `key1` `value1` into `bst` before calling `insert(key2,value2)`, to be that they are also inserted into the result. A metamorphic property (almost) always relates two calls to the function under test: in this case, the function under test is insert, and the two calls are `bst.insert(key2, value2)` and `bst.insert(key1, value1).insert(key2, value2)`. The latter is constructed by modifying the argument, in this case also using insert, and the property expresses an expected relationship between the values of the two calls. Metamorphic testing is a fruitful source of property ideas, since if we are given O(n) operations to test, each of which can also be used as a modifier, then there are potentially O(n<sup>2</sup>) properties that we can define.
 >
 > However, the property above is not true: testing it yields:
 
@@ -900,7 +902,7 @@ boolean insert_model(
 
 The Java version also required to make testing for equivalence of entry
 lists ignore the order of entries. I'm not sure why that isn't creating
-problems with Haskell and Quickcheck. 
+problems with Haskell and QuickCheck. 
 
 Here's the rest of the model based properties:
 
