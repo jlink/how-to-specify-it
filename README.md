@@ -50,11 +50,6 @@ striking through the original.
 Moreover, whenever the floating text referenced variables or functions
 from the code I used the names from the Java code.
 
-I turned the end notes of references into links
-pointing to PDF versions of the referenced paper. In the one case
-where I could not find a publicly available PDF I reference the 
-publisher's library entry.
-
 #### The Code
 
 You can find [all the code on github](https://github.com/jlink/how-to-specify-it/tree/master/src).
@@ -82,6 +77,7 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
   - [5.2&nbsp;&nbsp; Bug finding performance](#52-bug-finding-performance)
   - [5.3&nbsp;&nbsp; Lessons](#53-lessons)
 - [6&nbsp;&nbsp; Discussion](#6-discussion)
+- [References](#references)
 - [Personal Addendum](#personal-addendum)
   - [Bug Hunting with Unit Tests](#bug-hunting-with-unit-tests)
 
@@ -96,7 +92,7 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 > Searching for “property-based testing” on Youtube results in a lot of hits. Most of the top 100 consist of talks recorded at developer conferences and meetings, where (mostly) other people than this author present ideas, tools and methods for property-based testing, or applications that make use of it. Clearly, property-based testing is an idea whose time has come. But clearly, it is also poorly understood, requiring explanation over and over again!
 >
 > We have found that many developers trying property-based testing for the first time find it difficult to identify _properties to write_ — and find the simple examples in tutorials difficult to generalize. 
-> This is known as the [oracle problem](http://www0.cs.ucl.ac.uk/staff/m.harman/tse-oracle.pdf), 
+> This is known as the oracle problem [\[1\]](#ref-1), 
 > and it is common to all approaches that use test case generation.
 >
 > In this paper, therefore, we take a simple — but non-trivial — example of a purely functional data structure, and present five different approaches to writing properties, along with the pitfalls of each to keep in mind. We compare and contrast their effectiveness with the help of eight buggy implementations. We hope that the concrete advice presented here will enable readers to side-step the “where do I start?” question, and quickly derive the benefits that property-based testing has to offer.
@@ -104,7 +100,7 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 ## 2&nbsp;&nbsp; A Primer in Property-Based Testing 
 
 > Property-based testing is an approach to random testing pioneered by 
-> [QuickCheck in Haskell](http://users.cs.northwestern.edu/~robby/courses/395-495-2009-fall/quick.pdf). 
+> QuickCheck in Haskell [\[3\]](#ref-3). 
 > There is no precise definition of the term: indeed, MacIver [writes](https://hypothesis.works/articles/what-is-property-based-testing/):
 > > ‘Historically the definition of property-based testing has been “The thing that QuickCheck does”.’
 > The basic idea has been reimplemented many times — Wikipedia currently lists more than 50 implementations, in 36 different programming languages3, of all programming paradigms. These implementations vary in quality and features, but the ideas in this paper should be relevant to a user of any of them.
@@ -516,8 +512,9 @@ boolean insert_delete_complete(
 
 ### 4.3&nbsp;&nbsp; Metamorphic Properties
 
-> [Metamorphic testing](http://www.cs.hku.hk/research/techreps/document/TR-2017-04.pdf) 
-> is a successful approach to the oracle problem in many contexts. The basic idea is this: even if the expected result of a function call such as `tree.insert(key, value)` may be difficult to predict, we may still be able to express an expected relationship between this result, and the result of a related call. For example, if we insert an additional key into `tree` before calling `insert(key, value)`, we might expect the additional key to be inserted into the result also.
+> Metamorphic testing is a successful approach to the oracle 
+> problem in many contexts [\[2\]](#ref-2). 
+> The basic idea is this: even if the expected result of a function call such as `tree.insert(key, value)` may be difficult to predict, we may still be able to express an expected relationship between this result, and the result of a related call. For example, if we insert an additional key into `tree` before calling `insert(key, value)`, we might expect the additional key to be inserted into the result also.
 >
 > Formalizing this intuition, we might define the property
 
@@ -846,7 +843,9 @@ boolean insert_complete_for_union(
 
 ### 4.5&nbsp;&nbsp; Model-based Properties
 
-> In 1972, Hoare published [an approach to proving the correctness of data representations](https://link.springer.com/article/10.1007%2FBF00289507), by relating them to abstract data using an abstraction function. Hoare defines a concrete and abstract implementation for each operation, and then proves that diagrams such as this one commute:
+> In 1972, Hoare published an approach to proving the correctness of 
+> data representations [\[4\]](#ref-4), 
+> by relating them to abstract data using an abstraction function. Hoare defines a concrete and abstract implementation for each operation, and then proves that diagrams such as this one commute:
 
 <pre style="font-family: monospace">
                   abstraction
@@ -1269,6 +1268,20 @@ of the generated parameter _after_ the property was run, and not as
 we might expect it _before_ execution.
 
 > We hope the reader will find the ideas in this paper helpful in developing effective property-based tests in the future.
+
+## References
+
+#### Ref 1 
+    E. T. Barr, M. Harman, P. McMinn, M. Shahbaz, and S. Yoo. The oracle problem in software testing: A survey. IEEE Trans. on Soft. Eng., 41(5):507–525, May 2015.
+
+#### Ref 2 
+    Tsong Yueh Chen, Fei-Ching Kuo, Huai Liu, Pak-Lok Poon, Dave Towey, T. H. Tse, and Zhi Quan Zhou. Metamorphic testing: A review of challenges and opportunities. ACM Comput. Surv., 51(1):4:1–4:27, January 2018.
+
+#### Ref 3 
+    Koen Claessen and John Hughes. Quickcheck: A lightweight tool for random testing of haskell programs. In Proc. 5th ACM SIGPLAN Int. Conf. on Functional Programming, ICFP ’00, 2000.
+
+#### Ref 4 
+    C. A. Hoare. Proof of correctness of data representations. Acta Inf., 1(4):271–281, December 1972.
 
 ## Personal Addendum
 
