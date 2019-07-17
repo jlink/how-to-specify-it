@@ -1272,16 +1272,16 @@ we might expect it _before_ execution.
 ## References
 
 #### Ref 1 
-    E. T. Barr, M. Harman, P. McMinn, M. Shahbaz, and S. Yoo. The oracle problem in software testing: A survey. IEEE Trans. on Soft. Eng., 41(5):507–525, May 2015.
+> E. T. Barr, M. Harman, P. McMinn, M. Shahbaz, and S. Yoo. The oracle problem in software testing: A survey. _IEEE Trans. on Soft. Eng._, 41(5):507–525, May 2015.
 
 #### Ref 2 
-    Tsong Yueh Chen, Fei-Ching Kuo, Huai Liu, Pak-Lok Poon, Dave Towey, T. H. Tse, and Zhi Quan Zhou. Metamorphic testing: A review of challenges and opportunities. ACM Comput. Surv., 51(1):4:1–4:27, January 2018.
+> Tsong Yueh Chen, Fei-Ching Kuo, Huai Liu, Pak-Lok Poon, Dave Towey, T. H. Tse, and Zhi Quan Zhou. Metamorphic testing: A review of challenges and opportunities. _ACM Comput. Surv._, 51(1):4:1–4:27, January 2018.
 
 #### Ref 3 
-    Koen Claessen and John Hughes. Quickcheck: A lightweight tool for random testing of haskell programs. In Proc. 5th ACM SIGPLAN Int. Conf. on Functional Programming, ICFP ’00, 2000.
+> Koen Claessen and John Hughes. Quickcheck: A lightweight tool for random testing of haskell programs. In _Proc. 5th ACM SIGPLAN Int. Conf. on Functional Programming_, ICFP ’00, 2000.
 
 #### Ref 4 
-    C. A. Hoare. Proof of correctness of data representations. Acta Inf., 1(4):271–281, December 1972.
+> C. A. Hoare. Proof of correctness of data representations. _Acta Inf._, 1(4):271–281, December 1972.
 
 ## Personal Addendum
 
