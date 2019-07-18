@@ -979,19 +979,19 @@ void measure(
 > This property never fails, it just collects information about the generated tests, which is reported in tables afterwards. Running a million tests results in
 
 ```
-[BST Properties:measure] frequency = 
-    absent  : 89 %
-    present : 11 %
-
-[BST Properties:measure] position = 
-    middle   : 94.03 %
-    at start : 2.29 %
-    at end   : 2.29 %
-    empty    : 1.39 %
-    just key : 0.0 %
+[BST Properties:measure] (1000000) frequency = 
+    absent  (885816) : 89 %
+    present (114184) : 11 %
+    
+[BST Properties:measure] (1000000) position = 
+    middle   (939638) : 93.96 %
+    at start ( 23300) : 2.33 %
+    at end   ( 23277) : 2.33 %
+    empty    ( 13775) : 1.38 %
+    just key (    10) : 0.0 %
 ```
 
-> From the second table, we can see that `key` appears at the beginning or end of the keys in `bst` about ~~10%~~ 4.6% of the time for each case, while it appears somewhere in the middle of the sequences of keys ~~75%~~ 94% of the time. This looks quite reasonable. On the other hand, _in almost ~~80%~~ 90% of tests, key is not found in the tree at all!_
+> From the second table, we can see that `key` appears at the beginning or end of the keys in `bst` about ~~10%~~ 4.7% of the time for each case, while it appears somewhere in the middle of the sequences of keys ~~75%~~ 94% of the time. This looks quite reasonable. On the other hand, _in almost ~~80%~~ 90% of tests, key is not found in the tree at all!_
 >
 > For some of the properties we defined, this will result in quite inefficient testing. For example, consider the postcondition for insert:
 
@@ -1015,7 +1015,7 @@ boolean insert_post(
 >
 > More reasonable would be to divide our test effort roughly equally between cases in which the given key does occur in the random tree, and cases in which it does not. We can achieve this by changing the generation of keys.  
 
-For example, we can give keys between 0 and 50 an additional
+For example, we can give keys between -25 and +25 an additional
 chance of being chosen which will raise the probability that
 a number is both in the generated tree and the generated single key:
 
@@ -1023,7 +1023,7 @@ a number is both in the generated tree and the generated single key:
 @Provide
 Arbitrary<Integer> keys() {
     return Arbitraries.oneOf(
-            Arbitraries.integers().between(0, 50),
+            Arbitraries.integers().between(-25, 25),
             Arbitraries.integers()
     ).unique();
 }
@@ -1034,16 +1034,16 @@ This requires to both use this function the `trees()` generator method and chang
 > Testing property `measure` using this type for keys results in the following, ~~much~~ somewhat better, distribution:
 
 ```
-[BST Properties:measure] frequency = 
-    present : 58 %
-    absent  : 42 %
+[BST Properties:measure] (1000000) frequency = 
+    absent  (562002) : 56 %
+    present (437998) : 44 %
 
-[BST Properties:measure] position = 
-    middle   : 94.82 %
-    at start : 1.91 %
-    at end   : 1.89 %
-    empty    : 1.38 %
-    just key : 0.0 %
+[BST Properties:measure] (1000000) position = 
+    middle   (948398) : 94.84 %
+    at end   ( 18896) : 1.89 %
+    at start ( 18784) : 1.88 %
+    empty    ( 13892) : 1.39 %
+    just key (    30) : 0.0 %
 ```
 
 > This example illustrates that “collisions” (that is, cases in which we randomly choose the same value in two places) can be important test cases. Indeed, consider the following (obviously false) property:

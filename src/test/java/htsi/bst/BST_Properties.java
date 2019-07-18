@@ -633,8 +633,8 @@ class BST_Properties {
 	@Property(tries = 1_000_000)
 	//@Disabled("takes very long")
 	void measure(
-			// @ForAll Integer key,
-			@ForAll("keys") Integer key,
+			 @ForAll Integer key,
+//			@ForAll("keys") Integer key,
 			@ForAll("trees") BST<Integer, Integer> bst
 	) {
 		List<Integer> keys = bst.keys();
@@ -649,10 +649,10 @@ class BST_Properties {
 						"middle";
 		Statistics.label("position").collect(position);
 
-		//		String size = bst.isEmpty() ? "empty" :
-		//				bst.size() < 10 ? "< 10" :
-		//				bst.size() < 100 ? "10 >= x < 100" : ">= 100";
-		//		Statistics.label("size").collect(size);
+		String size = bst.isEmpty() ? "empty" :
+				bst.size() < 10 ? "< 10" :
+				bst.size() < 100 ? "10 >= x < 100" : ">= 100";
+		Statistics.label("size").collect(size);
 	}
 
 	@Property(afterFailure = AfterFailureMode.RANDOM_SEED)
@@ -664,8 +664,8 @@ class BST_Properties {
 
 	@Provide
 	Arbitrary<BST<Integer, Integer>> trees() {
-		Arbitrary<Integer> keys = keys();
-		// Arbitrary<Integer> keys = Arbitraries.integers().unique();
+//		Arbitrary<Integer> keys = keys();
+		 Arbitrary<Integer> keys = Arbitraries.integers().unique();
 		Arbitrary<Integer> values = Arbitraries.integers();
 		Arbitrary<List<Tuple2<Integer, Integer>>> keysAndValues =
 				Combinators.combine(keys, values).as(Tuple::of).list();
@@ -684,7 +684,7 @@ class BST_Properties {
 	@Provide
 	Arbitrary<Integer> keys() {
 		return Arbitraries.oneOf(
-				Arbitraries.integers().between(0, 50),
+				Arbitraries.integers().between(-25, 25),
 				Arbitraries.integers()
 		).unique();
 	}
