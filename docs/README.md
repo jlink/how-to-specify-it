@@ -1295,10 +1295,11 @@ the kind of unit tests I usually write at detecting bugs.
 ### Bug Hunting with Unit Tests
 
 Initially, I had created the class `BST` using test-driven development
-before I started to apply all the different kind properties. You can find the resulting suite of unit tests 
+before I started to implement all the different properties from this article. 
+You can find the resulting suite of unit tests 
 [here](https://github.com/jlink/how-to-specify-it/blob/master/src/test/java/htsi/bst/BST_Tests.javaa). 
 Those tests did _not_ lead me to a bug-free implementation; the most 
-serious error I had made was in the deletion code in which full subtrees
+serious error I had made was in the deletion code, in which full subtrees
 could sometimes get lost. So writing and running the properties
 definitely helped me weed out some of my blunders.
  
