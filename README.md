@@ -968,12 +968,10 @@ void measure(
     String frequency = keys.contains(key) ? "present" : "absent";
     Statistics.label("frequency").collect(frequency);
 
-    String position =
-            bst.isLeaf() ? "empty"
-            : keys.equals(Collections.singletonList(key)) ? "just key"
-            : keys.get(0).equals(key) ? "at start"
-            : keys.get(keys.size() - 1 ).equals(key) ? "at end"
-            : "middle";
+    String position = bst.isLeaf() ? "empty" :
+        keys.equals(Collections.singletonList(key)) ? "just key" :
+        keys.stream().allMatch(k -> k.compareTo(key) >= 0) ? "at start" :
+        keys.stream().allMatch(k -> k.compareTo(key) <= 0) ? "at end" : "middle";
     Statistics.label("position").collect(position);
 }
 ```
@@ -986,14 +984,14 @@ void measure(
     present : 11 %
 
 [BST Properties:measure] position = 
-    middle   : 98.18 %
-    empty    : 1.36 %
-    at end   : 0.24 %
-    at start : 0.21 %
+    middle   : 94.03 %
+    at start : 2.29 %
+    at end   : 2.29 %
+    empty    : 1.39 %
     just key : 0.0 %
 ```
 
-> From the second table, we can see that `key` appears at the beginning or end of the keys in `bst` about ~~10%~~ 0.5% of the time for each case, while it appears somewhere in the middle of the sequences of keys ~~75%~~ 98% of the time. This looks quite reasonable. On the other hand, _in almost ~~80%~~ 90% of tests, key is not found in the tree at all!_
+> From the second table, we can see that `key` appears at the beginning or end of the keys in `bst` about ~~10%~~ 4.6% of the time for each case, while it appears somewhere in the middle of the sequences of keys ~~75%~~ 94% of the time. This looks quite reasonable. On the other hand, _in almost ~~80%~~ 90% of tests, key is not found in the tree at all!_
 >
 > For some of the properties we defined, this will result in quite inefficient testing. For example, consider the postcondition for insert:
 
@@ -1041,10 +1039,10 @@ This requires to both use this function the `trees()` generator method and chang
     absent  : 42 %
 
 [BST Properties:measure] position = 
-    middle   : 97.75 %
-    empty    : 1.39 %
-    at start : 0.72 %
-    at end   : 0.13 %
+    middle   : 94.82 %
+    at start : 1.91 %
+    at end   : 1.89 %
+    empty    : 1.38 %
     just key : 0.0 %
 ```
 

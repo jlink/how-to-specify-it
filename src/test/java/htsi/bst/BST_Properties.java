@@ -624,14 +624,16 @@ class BST_Properties {
 	}
 
 	// prop_Measure k t =
-	//   label (if k ∈ keys t then "present" else "absent") $ label
-	//     (if t ≡ nil then "empty" else
-	//       if keys t ≡ [k] then "just k" else
-	//       if (all (􏰁 k) (keys t)) then "at start" else if (all (􏰀 k) (keys t)) then "at end" else "middle") $
+	//   label (if k ∈ keys t then "present" else "absent") $
+	//   label (if t ≡ nil then "empty" else
+	//     if keys t ≡ [k] then "just k" else
+	//     if (all (>=􏰁 k) (keys t)) then "at start" else
+	//     if (all (􏰀<= k) (keys t)) then "at end" else "middle") $
 	//   True
 	@Property(tries = 1_000_000)
-	@Disabled("takes very long")
+	//@Disabled("takes very long")
 	void measure(
+			// @ForAll Integer key,
 			@ForAll("keys") Integer key,
 			@ForAll("trees") BST<Integer, Integer> bst
 	) {
@@ -642,8 +644,8 @@ class BST_Properties {
 		String position =
 				bst.isLeaf() ? "empty" :
 						keys.equals(Collections.singletonList(key)) ? "just key" :
-						keys.get(0).equals(key) ? "at start" :
-						keys.get(keys.size() - 1).equals(key) ? "at end" :
+						keys.stream().allMatch(k -> k.compareTo(key) >= 0) ? "at start" :
+						keys.stream().allMatch(k -> k.compareTo(key) <= 0) ? "at end" :
 						"middle";
 		Statistics.label("position").collect(position);
 
@@ -663,6 +665,7 @@ class BST_Properties {
 	@Provide
 	Arbitrary<BST<Integer, Integer>> trees() {
 		Arbitrary<Integer> keys = keys();
+		// Arbitrary<Integer> keys = Arbitraries.integers().unique();
 		Arbitrary<Integer> values = Arbitraries.integers();
 		Arbitrary<List<Tuple2<Integer, Integer>>> keysAndValues =
 				Combinators.combine(keys, values).as(Tuple::of).list();
