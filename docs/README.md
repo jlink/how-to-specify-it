@@ -985,10 +985,10 @@ void measure(
     
 [BST Properties:measure] (1000000) position = 
     middle   (939638) : 93.96 %
-    at start ( 23300) : 2.33 %
-    at end   ( 23277) : 2.33 %
-    empty    ( 13775) : 1.38 %
-    just key (    10) : 0.0 %
+    at start ( 23300) :  2.33 %
+    at end   ( 23277) :  2.33 %
+    empty    ( 13775) :  1.38 %
+    just key (    10) :  0.00 %
 ```
 
 > From the second table, we can see that `key` appears at the beginning or end of the keys in `bst` about ~~10%~~ 4.7% of the time for each case, while it appears somewhere in the middle of the sequences of keys ~~75%~~ 94% of the time. This looks quite reasonable. On the other hand, _in almost ~~80%~~ 90% of tests, key is not found in the tree at all!_
@@ -1040,10 +1040,10 @@ This requires to both use this function the `trees()` generator method and chang
 
 [BST Properties:measure] (1000000) position = 
     middle   (948398) : 94.84 %
-    at end   ( 18896) : 1.89 %
-    at start ( 18784) : 1.88 %
-    empty    ( 13892) : 1.39 %
-    just key (    30) : 0.0 %
+    at end   ( 18896) :  1.89 %
+    at start ( 18784) :  1.88 %
+    empty    ( 13892) :  1.39 %
+    just key (    30) :  0.00 %
 ```
 
 > This example illustrates that “collisions” (that is, cases in which we randomly choose the same value in two places) can be important test cases. Indeed, consider the following (obviously false) property:
