@@ -631,10 +631,10 @@ class BST_Properties {
 	//     if (all (􏰀<= k) (keys t)) then "at end" else "middle") $
 	//   True
 	@Property(tries = 1_000_000)
-	//@Disabled("takes very long")
+	@Disabled("takes very long")
 	void measure(
-			 @ForAll Integer key,
-//			@ForAll("keys") Integer key,
+			// @ForAll Integer key,
+			@ForAll("keys") Integer key,
 			@ForAll("trees") BST<Integer, Integer> bst
 	) {
 		List<Integer> keys = bst.keys();
@@ -664,8 +664,8 @@ class BST_Properties {
 
 	@Provide
 	Arbitrary<BST<Integer, Integer>> trees() {
-//		Arbitrary<Integer> keys = keys();
-		 Arbitrary<Integer> keys = Arbitraries.integers().unique();
+		Arbitrary<Integer> keys = keys();
+		// Arbitrary<Integer> keys = Arbitraries.integers().unique();
 		Arbitrary<Integer> values = Arbitraries.integers();
 		Arbitrary<List<Tuple2<Integer, Integer>>> keysAndValues =
 				Combinators.combine(keys, values).as(Tuple::of).list();
