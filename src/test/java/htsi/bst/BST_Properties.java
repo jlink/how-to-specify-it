@@ -6,6 +6,7 @@ import java.util.Map.*;
 
 import net.jqwik.api.*;
 import net.jqwik.api.Tuple.*;
+import net.jqwik.api.statistics.Statistics;
 
 import static htsi.bst.BSTUtils.*;
 
@@ -631,7 +632,7 @@ class BST_Properties {
 	//     if (all (􏰀<= k) (keys t)) then "at end" else "middle") $
 	//   True
 	@Property(tries = 1_000_000)
-	@Disabled("takes very long")
+	@Disabled("takes about 5 mins to run")
 	void measure(
 			// @ForAll Integer key,
 			@ForAll("keys") Integer key,
