@@ -17,6 +17,10 @@ using [jqwik](https://jqwik.net) as property testing library.
 [John was kind enough](https://twitter.com/rjmh/status/1147034204439490560) 
 to allow me to use _his text_ enriched by my examples. His paper is published under [CC-BY license](https://creativecommons.org/licenses/by/2.0/) and so is my "remix".
 
+You can also 
+[watch John present the same topic](https://www.youtube.com/watch?v=G0NUOst-53U)
+in his keynote for Lambda Days 2020.
+
 
 #### Changes I made to the original text
 
