@@ -65,24 +65,28 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 ## Table of Contents  
 
   - [Abstract.](#abstract)
-- [1&nbsp;&nbsp; Introduction](#1-introduction)
-- [2&nbsp;&nbsp; A Primer in Property-Based Testing](#2-a-primer-in-property-based-testing)
-- [3&nbsp;&nbsp; Our Running Example: Binary Search Trees](#3-our-running-example-binary-search-trees)
-- [4&nbsp;&nbsp; Approaches to Writing Properties](#4-approaches-to-writing-properties)
-  - [4.1&nbsp;&nbsp; Validity Testing](#41-validity-testing)
-  - [4.2&nbsp;&nbsp; Postconditions](#42-postconditions)
-  - [4.3&nbsp;&nbsp; Metamorphic Properties](#43-metamorphic-properties)
+- [1&nbsp;&nbsp; Introduction](#1nbspnbsp-introduction)
+- [2&nbsp;&nbsp; A Primer in Property-Based Testing](#2nbspnbsp-a-primer-in-property-based-testing)
+- [3&nbsp;&nbsp; Our Running Example: Binary Search Trees](#3nbspnbsp-our-running-example-binary-search-trees)
+- [4&nbsp;&nbsp; Approaches to Writing Properties](#4nbspnbsp-approaches-to-writing-properties)
+  - [4.1&nbsp;&nbsp; Validity Testing](#41nbspnbsp-validity-testing)
+  - [4.2&nbsp;&nbsp; Postconditions](#42nbspnbsp-postconditions)
+  - [4.3&nbsp;&nbsp; Metamorphic Properties](#43nbspnbsp-metamorphic-properties)
     - [Preservation of Equivalence](#preservation-of-equivalence)
-  - [4.4&nbsp;&nbsp; Inductive Testing](#44-inductive-testing)
-  - [4.5&nbsp;&nbsp; Model-based Properties](#45-model-based-properties)
-  - [4.6&nbsp;&nbsp; A Note on Generation](#46-a-note-on-generation)
-- [5&nbsp;&nbsp; Bug Hunting](#5-bug-hunting)
-  - [5.1&nbsp;&nbsp; Bug finding effectiveness](#51-bug-finding-effectiveness)
+  - [4.4&nbsp;&nbsp; Inductive Testing](#44nbspnbsp-inductive-testing)
+  - [4.5&nbsp;&nbsp; Model-based Properties](#45nbspnbsp-model-based-properties)
+  - [4.6&nbsp;&nbsp; A Note on Generation](#46nbspnbsp-a-note-on-generation)
+- [5&nbsp;&nbsp; Bug Hunting](#5nbspnbsp-bug-hunting)
+  - [5.1&nbsp;&nbsp; Bug finding effectiveness](#51nbspnbsp-bug-finding-effectiveness)
     - [Differences between QuickCheck and _jqwik_ Bug Hunting Results](#differences-between-quickcheck-and-_jqwik_-bug-hunting-results)
-  - [5.2&nbsp;&nbsp; Bug finding performance](#52-bug-finding-performance)
-  - [5.3&nbsp;&nbsp; Lessons](#53-lessons)
-- [6&nbsp;&nbsp; Discussion](#6-discussion)
+  - [5.2&nbsp;&nbsp; Bug finding performance](#52nbspnbsp-bug-finding-performance)
+  - [5.3&nbsp;&nbsp; Lessons](#53nbspnbsp-lessons)
+- [6&nbsp;&nbsp; Discussion](#6nbspnbsp-discussion)
 - [References](#references)
+    - [Ref 1](#ref-1)
+    - [Ref 2](#ref-2)
+    - [Ref 3](#ref-3)
+    - [Ref 4](#ref-4)
 - [Personal Addendum](#personal-addendum)
   - [Bug Hunting with Unit Tests](#bug-hunting-with-unit-tests)
 
@@ -284,15 +288,15 @@ Strictly speaking this would not be necessary for _jqwik_ since the framework
 can randomly choose any type that's compatible with the generic type
 definition. To be closer to the original version I went with `Integer` nonetheless.
 
-[Comment: Updated to this point]::
-
 ## 4&nbsp;&nbsp; Approaches to Writing Properties
 
 ### 4.1&nbsp;&nbsp; Validity Testing
 
-> Like many data-structures, binary search trees satisfy an important invariant— and so we can write properties to test that the invariant is preserved.
+> __“Every operation should return valid results.”__
+> 
+> Many data-structures need to satisfy invariant properties, above and beyond being well-typed, and binary search trees are no exception: the keys in the tree should be ordered. In this section, we shall see how to write properties that check that this invariant is preserved by each operation.
 >
-> In this case the invariant is captured by the 
+> We can capture the invariant by the
 > [following function](https://github.com/jlink/how-to-specify-it/blob/master/src/test/java/htsi/bst/BSTUtils.java#L9):
 
 ```java
@@ -310,7 +314,7 @@ I spare you the clumsy generic Java types and the implementation of method `keys
 
 > That is, all the keys in a left subtree must be less than the key in the node, and all the keys in the right subtree must be greater.
 >
-> This definition is obviously correct, but also inefficient: it is quadratic in the size of the tree in the worst case. A more efficient definition would exploit the validity of the left and right subtrees, and compare only the last key in the left subtree, and the first key in the right subtree, against the key in a Branch node. But the equivalence of these two definitions depends on reasoning, and we prefer to avoid reasoning that is not checked by tests — if it turns out to be wrong, or is invalidated by later changes to the code, then tests using the more efficient definition might fail to detect some bugs. Testing that two definitions are equivalent would require testing a property such as
+> This definition is obviously correct, but it is an inefficient implementation of the validity checking function; it is quadratic in the size of the tree in the worst case. A more efficient implementation would exploit the validity of the left and right subtrees, and compare only the _last_ key in the left subtree, and the _first_ key in the right subtree, against the key in a _Branch_ node. But the equivalence of these two definitions depends on reasoning, and we prefer to _avoid reasoning that is not checked by tests_ — if it turns out to be wrong, or is invalidated by later changes to the code, then tests using the more efficient definition might fail to detect some bugs. Testing that two definitions are equivalent would require testing a property such as
 
 ```java
 @Property
@@ -319,7 +323,9 @@ boolean valid_and_fastValid_are_equivalent(@ForAll("trees") BST bst) {
 }
 ``` 
 
-> and to do so, we would need a generator that can produce both valid and invalid trees, so this is not a straightforward extension. We prefer, therefore, to use the obvious-but-inefficient definition, at least initially.
+> and to do so, we would need a generator that can produce _both valid and invalid trees_, so this is not a straightforward extension. We prefer, therefore, to use the obvious-but-inefficient definition, at least initially. The trees we are generating are relatively small, so quadratic complexity is not a problem.
+>
+> __“Test your tests.”__
 >
 > Now it is straightforward to define properties that check that every operation that constructs a tree, constructs a valid one:
 
@@ -424,9 +430,13 @@ that all preconditions used during data generation will also be
 preserved while shrinking. In addition shrinkers are directly derived 
 from generators and must not be implemented separately.
 
-> This section illustrates well the importance of testing our tests; it is vital to test generators and shrinkers independently of the operations under test, because a bug in either can result in very many hard-to-debug failures in other properties.
+> This section illustrates well the importance of _testing our tests_; it is vital to test generators and shrinkers _independently_ of the operations under test, because a bug in either can result in very many hard-to-debug failures in other properties.
 >
-> Validity properties are important to test, whenever a datatype has an invariant, but they are far from sufficient by themselves. Consider this: if every function returning a BST were defined to return nil in every case, then all the properties written so far would pass. insert could be defined to delete the key instead, or union could be defined to implement set difference — as long as the invariant is preserved, the properties will still pass. Thus we must move on to properties that better capture the intended behaviour of each operation.
+> > __Summary__: Validity testing consists of defining a function to check the invariants of your datatypes, writing properties to test that your genera- tors and shrinkers only produce valid results, and writing a property for each function under test that performs a single random call, and checks that the return value is valid.
+>
+> Validity properties are important to test, whenever a datatype has an invariant, but they are far from sufficient by themselves. Consider this: if every function returning a BST were defined to return nil in every case, then all the properties written so far would pass. insert could be defined to delete the key instead, or union could be defined to implement set difference — as long as the invariant is preserved, the properties will still pass. Thus, we must move on to properties that better capture the intended behaviour of each operation.
+
+[Comment: Updated to this point]::
 
 ### 4.2&nbsp;&nbsp; Postconditions
 
