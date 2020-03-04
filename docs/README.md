@@ -24,6 +24,7 @@ in his keynote for Lambda Days 2020.
 
 #### Changes I made to the original text
 
+This article is derived from the paper's PDF version - downloaded on March 1, 2020.
 John's original text
 
 > is formatted as quotation, 
@@ -93,21 +94,21 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 
 ## 1&nbsp;&nbsp; Introduction
 
-> Searching for “property-based testing” on Youtube results in a lot of hits. Most of the top 100 consist of talks recorded at developer conferences and meetings, where (mostly) other people than this author present ideas, tools and methods for property-based testing, or applications that make use of it. Clearly, property-based testing is an idea whose time has come. But clearly, it is also poorly understood, requiring explanation over and over again!
+> Property-based testing (PBT) is an approach to testing software by defining general properties that ought to hold of the code, and using (usually randomly) generated test cases to test that they do, while reporting minimized failing tests if they don’t. Pioneered by QuickCheck in Haskell, the method is now supported by a variety of tools in many programming languages, and is increasingly popular in practice. Searching for “property-based testing” on Youtube finds many videos on the topic—most of the top 100 recorded at developer conferences and meetings, where (mostly) other people than this author present ideas, tools and methods for PBT, or applications that make use of it. Clearly, property-based testing is an idea whose time has come. But equally clearly, it is also poorly understood, requiring explanation over and over again!
 >
 > We have found that many developers trying property-based testing for the first time find it difficult to identify _properties to write_ — and find the simple examples in tutorials difficult to generalize. 
 > This is known as the oracle problem [\[1\]](#ref-1), 
 > and it is common to all approaches that use test case generation.
 >
-> In this paper, therefore, we take a simple — but non-trivial — example of a purely functional data structure, and present five different approaches to writing properties, along with the pitfalls of each to keep in mind. We compare and contrast their effectiveness with the help of eight buggy implementations. We hope that the concrete advice presented here will enable readers to side-step the “where do I start?” question, and quickly derive the benefits that property-based testing has to offer.
+> In this paper, therefore, we take a simple — but non-trivial — example of a purely functional data structure, and present five different approaches to writing properties(invariants, postconditions, metamorphic properties and the preservation of equivalence, inductive properties, and model-based properties). We show the necessity of testing the random generators and shrinkers that property-based testing has to offer.
 
 ## 2&nbsp;&nbsp; A Primer in Property-Based Testing 
 
 > Property-based testing is an approach to random testing pioneered by 
-> QuickCheck in Haskell [\[3\]](#ref-3). 
+> QuickCheck in Haskell [\[3\]](#ref-3), in which universally quantified properties are evaluated as tests in randomly generated cases, and failing tests are simplified by a search for similar, smaller cases. 
 > There is no precise definition of the term: indeed, MacIver [writes](https://hypothesis.works/articles/what-is-property-based-testing/):
 > > ‘Historically the definition of property-based testing has been “The thing that QuickCheck does”.’
-> The basic idea has been reimplemented many times — Wikipedia currently lists more than 50 implementations, in 36 different programming languages3, of all programming paradigms. These implementations vary in quality and features, but the ideas in this paper should be relevant to a user of any of them.
+> The basic idea has been reimplemented many times — Wikipedia in 2019 lists more than 50 implementations, in 36 different programming languages, of all programming paradigms. Among contemporary PBT tools are, for example, ScalaCheck for the JVM, FsCheck for .NET, Quviq QuickCheck and Proper for the BEAM, Hypothesis for Python, PrologCheck for Prolog, and SmallCheck, SmartCheck and LeanCheck for Haskell, among many others. These implementations vary in quality and features, but the ideas in this paper — while presented using Haskell QuickCheck — should be relevant to a user of any of them.
 >
 > Suppose, then, that we need to test the `reverse` function on lists. 
 
@@ -159,7 +160,9 @@ boolean reverseList(@ForAll List<Integer> aList) {
 
 > but `predictRev` _is not easier to write than reverse_ — it is _exactly the same function_!
 >
-> This is the most obvious approach to writing properties — to replicate the implementation in the test code — and it is deeply unsatisfying. It is both an _expensive_ approach, because the replica of the implementation may be as complex as the implementation under test, and of _low value_, because there is a grave risk that misconceptions in the implementation will be replicated in the test code. “Expensive” and “low value” is an unfortunate combination of characteristics for a software testing method, and all too often leads developers to abandon property-based testing altogether.
+> This is the most obvious approach to writing properties — to replicate the implementation in the test code — and it is deeply unsatisfying. It is both an _expensive_ approach, because the replica of the implementation may be as complex as the implementation under test, and of _low value_, because there is a grave risk that misconceptions in the implementation will be replicated in the test code. “Expensive” and “low value” is an unfortunate combination of characteristics for a software testing method!
+>
+> __“Avoid replicating your code in your tests.”__
 >
 > We can finesse the problem by rewriting the property so that it does not refer to an expected result, instead checking some _property_ of the result. For example, `reverse` is its own inverse:
 
@@ -210,7 +213,7 @@ Here the `sample` line shows the value of `aList` for which the test failed: (0,
 
 > Interestingly, the counterexample ~~QuickCheck~~ _jqwik_ reports for this property is always (0, -1) or (0, 1). These are not the random counterexamples that ~~QuickCheck~~ _jqwik_ finds first; they are the result of _shrinking_ the random counterexamples via a systematic greedy search for a simpler failing test. Shrinking lists tries to remove elements, and numbers shrink towards zero; the reason we see these two counterexamples is that `aList` must contain at least two different elements to falsify the property, and 0 and 1/-1 are the smallest pair of different integers. Shrinking is one of the most useful features of property-based testing, resulting in counterexamples which are usually easy to debug, because _every part_ of the counterexample is relevant to the failure.
 >
-> Now we have seen the benefits of property-based testing — random generation of very many test cases, and shrinking of counterexamples to minimal failing tests — and the major pitfall: the temptation to replicate the implementation in the tests, incurring high costs for little benefit. In the remainder of this paper, we present systematic ways to define properties _without_ falling into this trap. We will (largely) ignore the question of how to generate _effective_ test cases — that are good at reaching buggy behaviour in the implementation under test — because in the absence of good properties, good generators are of little value.
+> Now we have seen the benefits of property-based testing — random generation of very many test cases, and shrinking of counterexamples to minimal failing tests — and the major pitfall: the temptation to replicate the implementation in the tests, incurring high costs for little benefit. In the remainder of this paper, In the remainder of this paper, we present systematic ways to define properties _without_ falling into this trap. We will (largely) ignore the question of how to generate _effective_ test cases — that are good at reaching buggy behaviour in the implementation under test — even though this is an active research topic in its own right (see, for example, the field of _concolic testing_. While generating good test cases is important, in the absence of good properties, they are of little value.
 
 ## 3&nbsp;&nbsp; Our Running Example: Binary Search Trees
 
@@ -280,6 +283,8 @@ Shrinking behaviour is also automatically derived.
 Strictly speaking this would not be necessary for _jqwik_ since the framework
 can randomly choose any type that's compatible with the generic type
 definition. To be closer to the original version I went with `Integer` nonetheless.
+
+_Updated to this point_
 
 ## 4&nbsp;&nbsp; Approaches to Writing Properties
 
