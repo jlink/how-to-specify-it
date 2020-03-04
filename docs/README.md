@@ -432,7 +432,7 @@ from generators and must not be implemented separately.
 
 > This section illustrates well the importance of _testing our tests_; it is vital to test generators and shrinkers _independently_ of the operations under test, because a bug in either can result in very many hard-to-debug failures in other properties.
 >
-> > __Summary__: Validity testing consists of defining a function to check the invariants of your datatypes, writing properties to test that your genera- tors and shrinkers only produce valid results, and writing a property for each function under test that performs a single random call, and checks that the return value is valid.
+> > __Summary__: Validity testing consists of defining a function to check the invariants of your datatypes, writing properties to test that your generators and shrinkers only produce valid results, and writing a property for each function under test that performs a single random call, and checks that the return value is valid.
 >
 > Validity properties are important to test, whenever a datatype has an invariant, but they are far from sufficient by themselves. Consider this: if every function returning a BST were defined to return nil in every case, then all the properties written so far would pass. insert could be defined to delete the key instead, or union could be defined to implement set difference — as long as the invariant is preserved, the properties will still pass. Thus, we must move on to properties that better capture the intended behaviour of each operation.
 
