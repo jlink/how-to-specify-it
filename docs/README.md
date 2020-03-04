@@ -284,7 +284,7 @@ Strictly speaking this would not be necessary for _jqwik_ since the framework
 can randomly choose any type that's compatible with the generic type
 definition. To be closer to the original version I went with `Integer` nonetheless.
 
-_Updated to this point_
+[Comment: Updated to this point]::
 
 ## 4&nbsp;&nbsp; Approaches to Writing Properties
 
