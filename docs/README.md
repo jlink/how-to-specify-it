@@ -278,7 +278,7 @@ _Generators_ have type `Arbitrary` in _jqwik_; they are usually fed
 to properties through methods annotated with `@Provide`. 
 Shrinking behaviour is also automatically derived.
 
-> We need to fix an instance type for testing; for the time being, we choose to let both keys and values be integers. `Integer` is usually an acceptably good choice as an instance for testing polymorphic properties, although we will return to this choice later.
+> We need to fix an instance type for testing; for the time being, we choose to let both keys and values be integers. ~~`Int`~~ `Integer` is usually an acceptably good choice as an instance for testing polymorphic properties, although we will return to this choice later.
 
 Strictly speaking this would not be necessary for _jqwik_ since the framework
 can randomly choose any type that's compatible with the generic type
