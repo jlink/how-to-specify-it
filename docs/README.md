@@ -868,10 +868,10 @@ boolean insert_complete_for_union(
 > > __Summary:__ _Inductive properties relate a call of the function-under-test to calls with smaller arguments. A set of inductive properties covering all possible cases together test the base case(s) and induction step(s) of an inductive proof-of-correctness. If all the properties hold, then we know the function is correct – inductive properties together make up a complete test._
 
 
-[Comment: Updated to this point]::
-
 ### 4.5&nbsp;&nbsp; Model-based Properties
 
+> __“Abstract away from details to simplify properties.”__
+>
 > In 1972, Hoare published an approach to proving the correctness of 
 > data representations [\[4\]](#ref-4), 
 > by relating them to abstract data using an abstraction function. Hoare defines a concrete and abstract implementation for each operation, and then proves that diagrams such as this one commute:
@@ -887,9 +887,9 @@ boolean insert_complete_for_union(
                   abstraction
 </pre>
 
-> It follows that any sequence of concrete operations behaves in the same way as the same sequence of abstract ones.
+> In this case we abstract trees `t (the concrete implementation) as ordered lists of key–value pairs `kvs (the abstract data), using an abstraction function which is just `toList()`. The diagram says that both paths from top left to bottom right should yield the same result: applying the concrete version of insertion to a tree, and then abstracting the result to a list of key–value pairs, yields the same list as the abstract version of insertion, applied to the abstracted input. If a similar diagram commutes for every operation in an API, then it follows that any sequence of concrete operations behaves in the same way as the same sequence of abstract ones.
 >
-> We can use the same idea for testing. In this case we will use ordered lists of key-value pairs as the abstract implementation, which means we can use toList as the abstraction function. Since `java.util.List` already provides an insertion function for ordered lists, it is tempting to define
+> We can use the same idea for testing. Since `java.util.List` already provides an insertion function for ordered lists, it is tempting to define
 
 ```java
 @Property
@@ -979,6 +979,12 @@ boolean find_model(
     return bst.find(key).equals(expectedFindResult);
 }
 ```
+
+> > __Summary:__ _A model-based property tests a single function by making a single call, and comparing its result to the result of a related “abstract operation” applied to related abstract arguments. An abstraction functions maps the real, concrete arguments and results to abstract values, which we also call the “model”._
+>
+
+
+[Comment: Updated to this point]::
 
 ### 4.6&nbsp;&nbsp; A Note on Generation
 
