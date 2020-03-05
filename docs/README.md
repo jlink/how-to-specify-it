@@ -72,21 +72,16 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
   - [4.1&nbsp;&nbsp; Validity Testing](#41nbspnbsp-validity-testing)
   - [4.2&nbsp;&nbsp; Postconditions](#42nbspnbsp-postconditions)
   - [4.3&nbsp;&nbsp; Metamorphic Properties](#43nbspnbsp-metamorphic-properties)
-    - [Preservation of Equivalence](#preservation-of-equivalence)
   - [4.4&nbsp;&nbsp; Inductive Testing](#44nbspnbsp-inductive-testing)
   - [4.5&nbsp;&nbsp; Model-based Properties](#45nbspnbsp-model-based-properties)
   - [4.6&nbsp;&nbsp; A Note on Generation](#46nbspnbsp-a-note-on-generation)
 - [5&nbsp;&nbsp; Bug Hunting](#5nbspnbsp-bug-hunting)
   - [5.1&nbsp;&nbsp; Bug finding effectiveness](#51nbspnbsp-bug-finding-effectiveness)
-    - [Differences between QuickCheck and _jqwik_ Bug Hunting Results](#differences-between-quickcheck-and-_jqwik_-bug-hunting-results)
   - [5.2&nbsp;&nbsp; Bug finding performance](#52nbspnbsp-bug-finding-performance)
   - [5.3&nbsp;&nbsp; Lessons](#53nbspnbsp-lessons)
-- [6&nbsp;&nbsp; Discussion](#6nbspnbsp-discussion)
+- [6&nbsp;&nbsp; Related work](#6nbspnbsp-related-work)
+- [7&nbsp;&nbsp; Discussion](#7nbspnbsp-discussion)
 - [References](#references)
-    - [Ref 1](#ref-1)
-    - [Ref 2](#ref-2)
-    - [Ref 3](#ref-3)
-    - [Ref 4](#ref-4)
 - [Personal Addendum](#personal-addendum)
   - [Bug Hunting with Unit Tests](#bug-hunting-with-unit-tests)
 
@@ -617,7 +612,7 @@ boolean insert_insert(
 }
 ```
 
-> Now, at last, the property passes. (We discuss why we need both this equivalence, and structural equality on trees, in [section 6](#6-a-note-on-generation)).
+> Now, at last, the property passes. (We discuss why we need both this equivalence, and structural equality on trees, in [section 7](#7-a-note-on-generation)).
 >
 > There is a different way to address the first problem — that the order of insertions does matter, when inserting the same key twice. That is to require the keys to be different, via a precondition:
 
@@ -1248,11 +1243,22 @@ statistical analysis. I might do that later, though.
 >
 
 
-[Comment: Updated to this point]::
+## 6&nbsp;&nbsp; Related work
 
-## 6&nbsp;&nbsp; Discussion
+> Pre- and post-conditions were introduced by Hoare [15] for the purpose of proving programs correct, inspired by Floyd [11]. The notion of a data representation invariant, which we use here for “validity testing”, comes from Hoare’s 1972 paper on proving data representations correct [14]. Pre- and post-conditions and invariants also form an integral part of Meyer’s “Design by Contract” approach to designing software [19], in which an invariant is specified for each class, and pre- and post-conditions for each class method, and these can optionally be checked at run-time — for example during testing.
+>
+> Metamorphic testing was introduced by Chen, Cheung and Yiu as a way of deriving tests that do not require an oracle [6]. They consider, for example, an algorithm to find shortest-paths in a graph. While it is difficult to check whether a path found by the algorithm is actually shortest, it is easy to compare the path found from a node with the paths found from its neighbours, and check that it is no longer than the shortest path via a neighbour. As in this case, the key idea is to compare results from multiple invocations of the code-under-test, and check that an appropriate “metamorphic relation” holds between them. We have used equalities and equivalences as metamorphic relations in this paper, but the idea is much more general — for example, one might test that insert does not reduce the size of a tree, which would catch bugs that accidentally discard part of the structure. Metamorphic testing is useful in many contexts, and is now the subject of an annual workshop series8.
+>
+> Metamorphic properties which are equations or equivalences are a form of algebraic specification [13]. Guttag and Horning divide the operations into those that return the type of interest (nil, insert, delete, and union, in our case), and observations that return a different type (find). They give conditions for “sufficient completeness”, meaning that the specification precisely determines the value of any observation.
+>
+> We already saw that the idea behind model-based properties comes from Hoare’s seminal paper [14]. Using an abstract model as a specification is also at the heart of the Z specification language [26](#26), and the field of model-based testing [5], an active research area with two workshop series devoted to it.
+>
+> The title of the paper is of course inspired by Polya’s classic book [23].
+>
 
-> We have discussed a number of different kinds of property that a developer can try to formulate to test an implementation: invariant properties, postconditions, metamorphic properties, inductive properties, and model-based properties. Each kind of property is based on a widely applicable idea, usable in many different settings. When writing metamorphic properties, we discovered the need to define equivalence of data structures, and thus also to define properties that test for preservation of equivalence. We discussed the importance of completeness — our test data generator should be able to generate any test case — and saw how to test this. We saw the importance of testing both our generators and our shrinkers, to ensure that other properties are tested with valid data. We saw how to measure the distribution of test data, to ensure that test effort is well spent.
+## 7&nbsp;&nbsp; Discussion
+
+> We have discussed a number of different kinds of properties that a developer can try to formulate to test an implementation: invariant properties, postconditions, metamorphic properties, inductive properties, and model-based properties. Each kind of property is based on a widely applicable idea, usable in many different settings. When writing metamorphic properties, we discovered the need to define equivalence of data structures, and thus also to define properties that test for preservation of equivalence. We discussed the importance of completeness — our test data generator should be able to generate any test case — and saw how to test this. We saw the importance of testing both our generators and our shrinkers, to ensure that other properties are tested with valid data. We saw how to measure the distribution of test data, to ensure that test effort is well spent.
 >
 > Model-based testing seemed the most effective approach overall, revealing all our bugs with a small number of properties, and generally finding bugs fast. But metamorphic testing was a fertile source of ideas, and was almost as effective at revealing bugs, so is a useful alternative, especially in situations where a model is expensive to construct.
 > 
@@ -1313,6 +1319,36 @@ we might expect it _before_ execution.
 > We hope the reader will find the ideas in this paper helpful in developing effective property-based tests in the future.
 
 ## References
+
+1. Clá́udio Amaral, Mário Florido, and V ítor Santos Costa. Prologcheck – property- based testing in prolog. In Michael Codish and Eijiro Sumii, editors, Functional and Logic Programming, pages 1–17, Cham, 2014. Springer International Publishing.
+2. Thomas Arts, John Hughes, Joakim Johansson, and Ulf T. Wiger. Testing telecoms software with quviq quickcheck. In Marc Feeley and Philip W. Trinder, editors, Proceedings of the 2006 ACM SIGPLAN Workshop on Erlang, Portland, Oregon, USA, September 16, 2006, pages 2–10. ACM, 2006.
+3. E. T. Barr, M. Harman, P. McMinn, M. Shahbaz, and S. Yoo. The oracle problem in software testing: A survey. IEEE Trans. on Soft. Eng., 41(5):507–525, May 2015.
+4. Rudy Matela Braquehais. Tools for discovery, refinement and generalization of functional properties by enumerative testing. PhD thesis, University of York, UK, 2017.
+5. Manfred Broy, Bengt Jonsson, J-P Katoen, Martin Leucker, and Alexander Pretschner. Model-based testing of reactive systems. In Volume 3472 of Springer LNCS. Springer, 2005.
+6. Tsong Y Chen, Shing C Cheung, and Shiu Ming Yiu. Metamorphic testing: a new approach for generating next test cases. Technical report, Technical Report HKUST-CS98-01, Department of Computer Science, Hong Kong, 1998.
+7. Tsong Yueh Chen, Fei-Ching Kuo, Huai Liu, Pak-Lok Poon, Dave Towey, T. H. Tse, and Zhi Quan Zhou. Metamorphic testing: A review of challenges and opportunities. ACM Comput. Surv., 51(1):4:1–4:27, January 2018.
+8. Koen Claessen. Inductive testing. Private communication; see slides at https://docs.google.com/presentation/d/1pejW9foV4ZAw5e03kYR3urNQsIPobomY_5HshxZQpLc/edit?usp=drivesdk
+9. Koen Claessen and John Hughes. Quickcheck: A lightweight tool for random test- ing of haskell programs. In Proc. 5th ACM SIGPLAN Int. Conf. on Functional Programming, ICFP ’00, 2000.
+10. Lindley et al., editor. A List of Successes That Can Change the World - Essays Dedicated to Philip Wadler on the Occasion of His 60th Birthday, volume 9600 of Lecture Notes in Computer Science. Springer, 2016.
+11. Robert W Floyd. Assigning meanings to programs. In Program Verification, pages 65–81. Springer, 1993.
+12. Patrice Godefroid, Nils Klarlund, and Koushik Sen. Dart: directed automated random testing. In ACM Sigplan Notices, volume 40, pages 213–223. ACM, 2005.
+13. John V. Guttag and James J. Horning. The algebraic specification of abstract data types. Acta informatica, 10(1):27–52, 1978.
+14. C. A. Hoare. Proof of correctness of data representations. Acta Inf., 1(4):271–281, December 1972.
+15. Charles Antony Richard Hoare. An axiomatic basis for computer programming. Communications of the ACM, 12(10):576–580, 1969.
+16. John Hughes. Experiences with quickcheck: Testing the hard stuff and staying sane. In et al. [10], pages 169–186.
+17. John Hughes. Experiences with quickcheck: Testing the hard stuff and staying sane. In et al. [10], pages 169–186.
+18. Andreas Löscher and Konstantinos Sagonas. Targeted property-based testing. In Proceedings of the 26th ACM SIGSOFT International Symposium on Software Testing and Analysis, pages 46–56. ACM, 2017.
+19. Bertrand Meyer. Applying’design by contract’. Computer, 25(10):40–51, 1992.
+20. Rickard Nilsson. Scalacheck: the definitive guide. 2014.
+21. Manolis Papadakis and Konstantinos Sagonas. A proper integration of types and function specifications with property-based testing. In Proceedings of the 10th ACM SIGPLAN workshop on Erlang, pages 39–50. ACM, 2011.
+22. Lee Pike. Smartcheck: automatic and efficient counterexample reduction and gen- eralization. In Wouter Swierstra, editor, Proceedings of the 2014 ACM SIGPLAN symposium on Haskell, Gothenburg, Sweden, September 4-5, 2014, pages 53–64. ACM, 2014.
+23. G Polya. How to solve it! A system of thinking which can help you solve any problem. Princeton University Press, 1945.
+24. Colin Runciman, Matthew Naylor, and Fredrik Lindblad. Smallcheck and lazy smallcheck: automatic exhaustive testing for small values. In Andy Gill, editor,
+Proceedings of the 1st ACM SIGPLAN Symposium on Haskell, Haskell 2008, Victoria, BC, Canada, 25 September 2008, pages 37–48. ACM, 2008.
+25. Koushik Sen, Darko Marinov, and Gul Agha. Cute: a concolic unit testing engine for c. In ACM SIGSOFT Software Engineering Notes, volume 30, pages 263–272. ACM, 2005.
+
+#### 26
+> J Michael Spivey. Understanding Z: a specification language and its formal semantics, volume 3. Cambridge University Press, 1988.
 
 #### Ref 1 
 > E. T. Barr, M. Harman, P. McMinn, M. Shahbaz, and S. Yoo. The oracle problem in software testing: A survey. _IEEE Trans. on Soft. Eng._, 41(5):507–525, May 2015.
