@@ -432,15 +432,15 @@ from generators and must not be implemented separately.
 
 > This section illustrates well the importance of _testing our tests_; it is vital to test generators and shrinkers _independently_ of the operations under test, because a bug in either can result in very many hard-to-debug failures in other properties.
 >
-> > __Summary__: Validity testing consists of defining a function to check the invariants of your datatypes, writing properties to test that your generators and shrinkers only produce valid results, and writing a property for each function under test that performs a single random call, and checks that the return value is valid.
+> > __Summary__: _Validity testing consists of defining a function to check the invariants of your datatypes, writing properties to test that your generators and shrinkers only produce valid results, and writing a property for each function under test that performs a single random call, and checks that the return value is valid._
 >
 > Validity properties are important to test, whenever a datatype has an invariant, but they are far from sufficient by themselves. Consider this: if every function returning a BST were defined to return nil in every case, then all the properties written so far would pass. insert could be defined to delete the key instead, or union could be defined to implement set difference — as long as the invariant is preserved, the properties will still pass. Thus, we must move on to properties that better capture the intended behaviour of each operation.
 
-[Comment: Updated to this point]::
-
 ### 4.2&nbsp;&nbsp; Postconditions
 
-> A postcondition is a property that should be True after a call, or (equivalently, for a pure function) True of its result. Thus we can define properties by asking ourselves “What should be True after calling f ?”. For example, after calling insert, then we should be able to find the key just inserted, and any previously inserted keys with unchanged values.
+> __“Postconditions relate return values to arguments of a single call.”__
+>
+> A postcondition is a property that should be True after a call, or (equivalently, for a pure function) True of its result. Thus, we can define properties by asking ourselves “What should be True after calling f ?”. For example, after calling insert, then we should be able to find the key just inserted, and any previously inserted keys with unchanged values.
 
 ```java
 @Property
@@ -470,7 +470,7 @@ boolean insert_post_same_key(
 }
 ```
 
-> Testing this property devotes all test effort to the case of finding a newly inserted key, but does not require us to replicate the logic in the more general postcondition.
+> Testing this property devotes all test effort to the case of finding a newly inserted key, but does not require us to replicate the code in the more general postcondition.
 >
 > We can write similar postconditions for delete and union; writing the property for union forces us to specify that union is left-biased (since union of finite maps cannot be commutative).
 
@@ -488,7 +488,7 @@ boolean union_post(
 }
 ```
 
-> Postconditions are not always as easy to write. For example, consider a postcondition for find. The return value is either `Optional.empty()`, in case the key is not found in the tree, or `Optional.of(v)`, in the case where it is present with value v. So it seems that, to write a postcondition for find, we need to be able to determine whether a given key is present in a tree, and if so, with what associated value. But this is exactly what find does! So it seems we are in the awkward situation discussed in the introduction: in order to test find, we need to reimplement it.
+> Postconditions are not always as easy to write. For example, consider a postcondition for find. The return value is either `Optional.empty()`, in case the key is not found in the tree, or `Optional.of(v)`, in the case where it is present with value v. So it seems that, to write a postcondition for find, we need to be able to determine whether a given key is present in a tree, and if so, with what associated value. _But this is exactly what find does!_ So it seems we are in the awkward situation discussed in the introduction: in order to test find, we need to reimplement it.
 >
 > We can finesse this problem using a very powerful and general idea, that of constructing a test case whose outcome is easy to predict. In this case, we know that a tree must contain a key `key`, if we have just inserted it. Likewise, we know that a tree cannot contain a key `key`, if we have just deleted it. Thus we can write two postconditions for find, covering the two cases:
 
@@ -528,6 +528,11 @@ boolean insert_delete_complete(
     }
 }
 ```
+
+> > __Summary:__ _A postcondition tests a single function, calling it with random arguments, and checking an expected relationship between its arguments and its result._
+
+
+[Comment: Updated to this point]::
 
 ### 4.3&nbsp;&nbsp; Metamorphic Properties
 
