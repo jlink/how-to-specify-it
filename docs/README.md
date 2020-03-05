@@ -86,6 +86,7 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 - [6&nbsp;&nbsp; Related work](#6-related-work)
 - [7&nbsp;&nbsp; Discussion](#7-discussion)
 - [References](#references)
+- [Footnotes](#footnotes)
 - [Personal Addendum](#personal-addendum)
   - [Bug Hunting with Unit Tests](#bug-hunting-with-unit-tests)
 
