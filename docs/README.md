@@ -531,16 +531,13 @@ boolean insert_delete_complete(
 
 > > __Summary:__ _A postcondition tests a single function, calling it with random arguments, and checking an expected relationship between its arguments and its result._
 
-
-[Comment: Updated to this point]::
-
 ### 4.3&nbsp;&nbsp; Metamorphic Properties
 
+> __“Related calls return related results.”__
+>
 > Metamorphic testing is a successful approach to the oracle 
 > problem in many contexts [\[2\]](#ref-2). 
-> The basic idea is this: even if the expected result of a function call such as `tree.insert(key, value)` may be difficult to predict, we may still be able to express an expected relationship between this result, and the result of a related call. For example, if we insert an additional key into `tree` before calling `insert(key, value)`, we might expect the additional key to be inserted into the result also.
->
-> Formalizing this intuition, we might define the property
+> The basic idea is this: even if the expected result of a function call such as `tree.insert(key, value)` may be difficult to predict, we may still be able to express an expected relationship between this result, and the result of a related call. In this case, if we insert an additional key into `tree` before calling `insert(key, value)`, then we expect the additional key to appear in the result also. We formalize this as the following _metamorphic property_:
 
 ```java
 @Property
@@ -554,7 +551,7 @@ boolean insert_insert(
 }
 ```
 
-> Informally, we expect the effect of inserting `key1` `value1` into `bst` before calling `insert(key2,value2)`, to be that they are also inserted into the result. A metamorphic property (almost) always relates two calls to the function under test: in this case, the function under test is insert, and the two calls are `bst.insert(key2, value2)` and `bst.insert(key1, value1).insert(key2, value2)`. The latter is constructed by modifying the argument, in this case also using insert, and the property expresses an expected relationship between the values of the two calls. Metamorphic testing is a fruitful source of property ideas, since if we are given O(n) operations to test, each of which can also be used as a modifier, then there are potentially O(n<sup>2</sup>) properties that we can define.
+> A metamorphic property, like this one, (almost) always relates two calls to the function under test. Here the function under test is `insert`, and the two calls are `bst.insert(key2, value2)` and `bst.insert(key1, value1).insert(key2, value2)`. The latter is constructed by modifying the argument, in this case also using insert, and the property expresses an expected relationship between the values of the two calls. Metamorphic testing is a fruitful source of property ideas, since if we are given O(n) operations to test, each of which can also be used as a modifier, then there are potentially O(n<sup>2</sup>) properties that we can define.
 >
 > However, the property above is not true: testing it yields:
 
@@ -671,8 +668,9 @@ boolean insert_union(
 }
 ```
 
-> and, in a similar way, metamorphic properties for the other functions in the API under test. We derived sixteen different properties in this way, which are ~~listed in Appendix A~~ [available on Github](https://github.com/jlink/how-to-specify-it/blob/master/src/test/java/htsi/bst/BST_Properties.java#L133). The trickiest case is union, which as a binary operation, can have either argument modified — or both. We also found that some properties could be motivated in more than one way. For example, property `insert_union` (above) can be motivated as a metamorphic test for insert, in which the argument is modified by union, or as a metamorphic test for union, in which the argument is modified by insert. Likewise, the metamorphic tests we wrote for find replicated the postconditions we wrote above for insert, delete and union. We do not see this as a problem: that there is more than one way to motivate a property does not make it any less useful, or any harder to come up with!
-
+> and, in a similar way, metamorphic properties for the other functions in the API under test. We derived sixteen different properties in this way, which are ~~listed in Appendix A~~ [available on Github](https://github.com/jlink/how-to-specify-it/blob/master/src/test/java/htsi/bst/BST_Properties.java#L133). The trickiest case is union which, as a binary operation, can have either argument modified — or both. We also found that some properties could be motivated in more than one way. For example, property `insert_union` (above) can be motivated as a metamorphic test for insert, in which the argument is modified by union, or as a metamorphic test for union, in which the argument is modified by insert. Likewise, the metamorphic tests we wrote for find replicated the postconditions we wrote above for insert, delete and union. We do not see this as a problem: that there is more than one way to motivate a property does not make it any less useful, or any harder to come up with!
+>
+> > __Summary:__ _A metamorphic property tests a single function by making (usually) two related calls, and checking the expected relationship between the two results._
 
 #### Preservation of Equivalence
 
@@ -784,6 +782,8 @@ boolean equivalent_trees_are_equivalent(
     return equivalent(bsts.get1(), bsts.get2());
 }
 ```
+
+[Comment: Updated to this point]::
 
 ### 4.4&nbsp;&nbsp; Inductive Testing
 
