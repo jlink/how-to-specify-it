@@ -1245,15 +1245,15 @@ statistical analysis. I might do that later, though.
 
 ## 6&nbsp;&nbsp; Related work
 
-> Pre- and post-conditions were introduced by Hoare [15] for the purpose of proving programs correct, inspired by Floyd [11]. The notion of a data representation invariant, which we use here for “validity testing”, comes from Hoare’s 1972 paper on proving data representations correct [14]. Pre- and post-conditions and invariants also form an integral part of Meyer’s “Design by Contract” approach to designing software [19], in which an invariant is specified for each class, and pre- and post-conditions for each class method, and these can optionally be checked at run-time — for example during testing.
+> Pre- and post-conditions were introduced by Hoare [\[15\]](#15) for the purpose of proving programs correct, inspired by Floyd [\[11\]](#11). The notion of a data representation invariant, which we use here for “validity testing”, comes from Hoare’s 1972 paper on proving data representations correct [\[14\]](#14). Pre- and post-conditions and invariants also form an integral part of Meyer’s “Design by Contract” approach to designing software [\[19\]](#19), in which an invariant is specified for each class, and pre- and post-conditions for each class method, and these can optionally be checked at run-time — for example during testing.
 >
-> Metamorphic testing was introduced by Chen, Cheung and Yiu as a way of deriving tests that do not require an oracle [6]. They consider, for example, an algorithm to find shortest-paths in a graph. While it is difficult to check whether a path found by the algorithm is actually shortest, it is easy to compare the path found from a node with the paths found from its neighbours, and check that it is no longer than the shortest path via a neighbour. As in this case, the key idea is to compare results from multiple invocations of the code-under-test, and check that an appropriate “metamorphic relation” holds between them. We have used equalities and equivalences as metamorphic relations in this paper, but the idea is much more general — for example, one might test that insert does not reduce the size of a tree, which would catch bugs that accidentally discard part of the structure. Metamorphic testing is useful in many contexts, and is now the subject of an annual workshop series8.
+> Metamorphic testing was introduced by Chen, Cheung and Yiu as a way of deriving tests that do not require an oracle [\[6\]](#6). They consider, for example, an algorithm to find shortest-paths in a graph. While it is difficult to check whether a path found by the algorithm is actually shortest, it is easy to compare the path found from a node with the paths found from its neighbours, and check that it is no longer than the shortest path via a neighbour. As in this case, the key idea is to compare results from multiple invocations of the code-under-test, and check that an appropriate “metamorphic relation” holds between them. We have used equalities and equivalences as metamorphic relations in this paper, but the idea is much more general — for example, one might test that insert does not reduce the size of a tree, which would catch bugs that accidentally discard part of the structure. Metamorphic testing is useful in many contexts, and is now the subject of an annual workshop series8.
 >
-> Metamorphic properties which are equations or equivalences are a form of algebraic specification [13]. Guttag and Horning divide the operations into those that return the type of interest (nil, insert, delete, and union, in our case), and observations that return a different type (find). They give conditions for “sufficient completeness”, meaning that the specification precisely determines the value of any observation.
+> Metamorphic properties which are equations or equivalences are a form of algebraic specification [\[13\]](#13). Guttag and Horning divide the operations into those that return the type of interest (nil, insert, delete, and union, in our case), and observations that return a different type (find). They give conditions for “sufficient completeness”, meaning that the specification precisely determines the value of any observation.
 >
-> We already saw that the idea behind model-based properties comes from Hoare’s seminal paper [14]. Using an abstract model as a specification is also at the heart of the Z specification language [\[26\]](#26), and the field of model-based testing [5], an active research area with two workshop series devoted to it.
+> We already saw that the idea behind model-based properties comes from Hoare’s seminal paper [\[14\]](#14). Using an abstract model as a specification is also at the heart of the Z specification language [\[26\]](#26), and the field of model-based testing [\[5\]](#5), an active research area with two workshop series devoted to it.
 >
-> The title of the paper is of course inspired by Polya’s classic book [23].
+> The title of the paper is of course inspired by Polya’s classic book [\[23\]](#23).
 >
 
 ## 7&nbsp;&nbsp; Discussion
@@ -1321,7 +1321,7 @@ we might expect it _before_ execution.
 ## References
 
 #### 1
-> Clá́udio Amaral, Mário Florido, and V ítor Santos Costa. Prologcheck – property- based testing in prolog. In Michael Codish and Eijiro Sumii, editors, Functional and Logic Programming, pages 1–17, Cham, 2014. Springer International Publishing.
+> Clá́udio Amaral, Mário Florido, and V ítor Santos Costa. Prologcheck – property-based testing in prolog. In Michael Codish and Eijiro Sumii, editors, Functional and Logic Programming, pages 1–17, Cham, 2014. Springer International Publishing.
 
 #### 2
 > Thomas Arts, John Hughes, Joakim Johansson, and Ulf T. Wiger. Testing telecoms software with quviq quickcheck. In Marc Feeley and Philip W. Trinder, editors,  Proceedings of the 2006 ACM SIGPLAN Workshop on Erlang, Portland, Oregon, USA, September 16, 2006, pages 2–10. ACM, 2006.
@@ -1330,7 +1330,7 @@ we might expect it _before_ execution.
 > E. T. Barr, M. Harman, P. McMinn, M. Shahbaz, and S. Yoo. The oracle problem in software testing: A survey. IEEE Trans. on Soft. Eng., 41(5):507–525, May 2015.
 
 #### 4
-> Rudy Matela Braquehais. Tools for discovery, refinement and generalization of functional properties by enumerative testing. PhD thesis, University of York, UK,  2017.
+> Rudy Matela Braquehais. Tools for discovery, refinement and generalization of functional properties by enumerative testing. PhD thesis, University of York, UK, 2017.
 
 #### 5
 > Manfred Broy, Bengt Jonsson, J-P Katoen, Martin Leucker, and Alexander Pretschner. Model-based testing of reactive systems. In Volume 3472 of Springer LNCS.  Springer, 2005.
