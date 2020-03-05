@@ -1410,7 +1410,7 @@ we might expect it _before_ execution.
 ## Footnotes
 
 #### F7
-> Recall that we have not imposed any balance condition on our trees. If we were to repeat this entire exercise for balanced trees, then we would need a stronger invariant to capture the balance condition, but we would still face the same problem in this property, since balance conditions don’t require a unique tree shape. Both trees in this example are balanced—they are just different balanced representations of the same information.
+> Recall that we have not imposed any balance condition on our trees. If we were to repeat this entire exercise for balanced trees, then we would need a stronger invariant to capture the balance condition, but we would still face the same problem in this property, since balance conditions don’t require a unique tree shape. Both trees in this example are balanced — they are just different balanced representations of the same information.
 
 #### F11
 > A company founded in 2006 by the author and Thomas Arts, to commercialize property based testing. See http://quviq.com
