@@ -55,11 +55,14 @@ striking through the original.
 Moreover, whenever the floating text referenced variables or functions
 from the code I used the names from the Java code.
 
+I tried to link all [bibliographic references](#references) correctly but only
+included some of the footnotes.
+
 #### The Code
 
 You can find [all the code on github](https://github.com/jlink/how-to-specify-it/tree/master/src).
 
-
+<!-- Generated toc must be stripped of `nbsp` occurrences in links -->
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Table of Contents  
@@ -93,7 +96,7 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 
 ## 1&nbsp;&nbsp; Introduction
 
-> Property-based testing (PBT) is an approach to testing software by defining general properties that ought to hold of the code, and using (usually randomly) generated test cases to test that they do, while reporting minimized failing tests if they don’t. Pioneered by QuickCheck in Haskell, the method is now supported by a variety of tools in many programming languages, and is increasingly popular in practice. Searching for “property-based testing” on Youtube finds many videos on the topic—most of the top 100 recorded at developer conferences and meetings, where (mostly) other people than this author present ideas, tools and methods for PBT, or applications that make use of it. Clearly, property-based testing is an idea whose time has come. But equally clearly, it is also poorly understood, requiring explanation over and over again!
+> Property-based testing (PBT) is an approach to testing software by defining general properties that ought to hold of the code, and using (usually randomly) generated test cases to test that they do, while reporting minimized failing tests if they don’t. Pioneered by QuickCheck in Haskell [\[9\]](#9), the method is now supported by a variety of tools in many programming languages, and is increasingly popular in practice. Searching for “property-based testing” on Youtube finds many videos on the topic—most of the top 100 recorded at developer conferences and meetings, where (mostly) other people than this author present ideas, tools and methods for PBT, or applications that make use of it. Clearly, property-based testing is an idea whose time has come. But equally clearly, it is also poorly understood, requiring explanation over and over again!
 >
 > We have found that many developers trying property-based testing for the first time find it difficult to identify _properties to write_ — and find the simple examples in tutorials difficult to generalize. 
 > This is known as the oracle problem [\[3\]](#3), 
@@ -107,7 +110,7 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 > QuickCheck in Haskell [\[9\]](#9), in which universally quantified properties are evaluated as tests in randomly generated cases, and failing tests are simplified by a search for similar, smaller cases. 
 > There is no precise definition of the term: indeed, MacIver [writes](https://hypothesis.works/articles/what-is-property-based-testing/):
 > > ‘Historically the definition of property-based testing has been “The thing that QuickCheck does”.’
-> The basic idea has been reimplemented many times — Wikipedia in 2019 lists more than 50 implementations, in 36 different programming languages, of all programming paradigms. Among contemporary PBT tools are, for example, ScalaCheck for the JVM, FsCheck for .NET, Quviq QuickCheck and Proper for the BEAM, Hypothesis for Python, PrologCheck for Prolog, and SmallCheck, SmartCheck and LeanCheck for Haskell, among many others. These implementations vary in quality and features, but the ideas in this paper — while presented using Haskell QuickCheck — should be relevant to a user of any of them.
+> The basic idea has been reimplemented many times — Wikipedia in 2019 lists more than 50 implementations, in 36 different programming languages, of all programming paradigms. Among contemporary PBT tools are, for example, ScalaCheck [\[20\]](#20) for the JVM, FsCheck for .NET, Quviq QuickCheck [\[2\]](#2)  [\[16\]](#16) and Proper [\[21\]](#21) [\[18\]](#18) for the BEAM, Hypothesis for Python, PrologCheck [\[1\]](#1) for Prolog, and SmallCheck [\[24\]](#24), SmartCheck [\[22\]](#22) and LeanCheck [\[4\]](#4) for Haskell, among many others. These implementations vary in quality and features, but the ideas in this paper — while presented using Haskell QuickCheck — should be relevant to a user of any of them.
 >
 > Suppose, then, that we need to test the `reverse` function on lists. 
 
@@ -212,7 +215,7 @@ Here the `sample` line shows the value of `aList` for which the test failed: (0,
 
 > Interestingly, the counterexample ~~QuickCheck~~ _jqwik_ reports for this property is always (0, -1) or (0, 1). These are not the random counterexamples that ~~QuickCheck~~ _jqwik_ finds first; they are the result of _shrinking_ the random counterexamples via a systematic greedy search for a simpler failing test. Shrinking lists tries to remove elements, and numbers shrink towards zero; the reason we see these two counterexamples is that `aList` must contain at least two different elements to falsify the property, and 0 and 1/-1 are the smallest pair of different integers. Shrinking is one of the most useful features of property-based testing, resulting in counterexamples which are usually easy to debug, because _every part_ of the counterexample is relevant to the failure.
 >
-> Now we have seen the benefits of property-based testing — random generation of very many test cases, and shrinking of counterexamples to minimal failing tests — and the major pitfall: the temptation to replicate the implementation in the tests, incurring high costs for little benefit. In the remainder of this paper, In the remainder of this paper, we present systematic ways to define properties _without_ falling into this trap. We will (largely) ignore the question of how to generate _effective_ test cases — that are good at reaching buggy behaviour in the implementation under test — even though this is an active research topic in its own right (see, for example, the field of _concolic testing_. While generating good test cases is important, in the absence of good properties, they are of little value.
+> Now we have seen the benefits of property-based testing — random generation of very many test cases, and shrinking of counterexamples to minimal failing tests — and the major pitfall: the temptation to replicate the implementation in the tests, incurring high costs for little benefit. In the remainder of this paper, In the remainder of this paper, we present systematic ways to define properties _without_ falling into this trap. We will (largely) ignore the question of how to generate _effective_ test cases — that are good at reaching buggy behaviour in the implementation under test — even though this is an active research topic in its own right (see, for example, the field of _concolic testing_ [\[12\]](#12) [\[25\]](#25). While generating good test cases is important, in the absence of good properties, they are of little value.
 
 ## 3&nbsp;&nbsp; Our Running Example: Binary Search Trees
 
@@ -803,7 +806,7 @@ boolean union_insert(
 }
 ```
 
-> We can argue that these two properties characterize the behaviour of union precisely (up to equivalence of trees), by induction on the size of union’s first argument. This idea is due to Claessen.
+> We can argue that these two properties characterize the behaviour of union precisely (up to equivalence of trees), by induction on the size of union’s first argument. This idea is due to Claessen  [\[8\]](#8).
 >
 > However, there is a hidden assumption in the argument above — namely, that any non-empty tree `bst` can be expressed in the form `bst2.insert(key, value)`, for some smaller tree `bst2`, or equivalently, that any tree can be constructed using insertions only. There is no reason to believe this a priori — it might be that some tree shapes can only be constructed by delete or union. So, to confirm that these two properties uniquely characterize union, we must test this assumption.
 > 
@@ -1275,7 +1278,7 @@ class - having a structural equality - within a public type that offers
 equivalence as equality.
 
 > The ideas in this paper are applicable to testing any pure code, but code with side-effects demands a somewhat different approach. In this case, every operation has an implicit “state” argument, and an invisible state result, making properties harder to formulate. Test cases are sequences of operations, to set up the state for each operation under test, and to observe changes made to the state afterwards. Nevertheless, the same ideas can be adapted to this setting; in particular, there are a number of state-machine modelling libraries for property-based testing tools that support a “model-based” approach in a stateful setting. State machine modelling is heavily used at Quviq AB for testing customer software, and an account of some of these examples can be found 
-> [here](https://publications.lib.chalmers.se/records/fulltext/232550/local_232550.pdf).
+> in  [\[17\]](#17).
 
 The code examples in this articles have shown that the pure code approach
 can be used in Java as well. However, the implementation of `BST` with
