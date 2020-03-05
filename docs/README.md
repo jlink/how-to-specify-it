@@ -783,29 +783,29 @@ boolean equivalent_trees_are_equivalent(
 }
 ```
 
-[Comment: Updated to this point]::
-
 ### 4.4&nbsp;&nbsp; Inductive Testing
 
-> Metamorphic properties do not, in general, completely specify the behaviour of the code under test. However, in some cases, a subset of metamorphic properties does form a complete specification. Consider, for example, the following two properties of union:
+> __“Inductive proofs inspire inductive tests.”__
+>
+> Metamorphic properties do not, in general, _completely_ specify the behaviour of the code under test. However, in some cases, a subset of metamorphic properties does form a complete specification. Consider, for example, the following two properties of union:
 
 ```java
-    @Property
-    boolean union_nil1(@ForAll("trees") BST<Integer, Integer> bst) {
-        return BST.union(bst, BST.nil()).equals(bst);
-    }
+@Property
+boolean union_nil1(@ForAll("trees") BST<Integer, Integer> bst) {
+    return BST.union(bst, BST.nil()).equals(bst);
+}
 
-    @Property
-    boolean union_insert(
-            @ForAll("trees") BST<Integer, Integer> bst1,
-            @ForAll("trees") BST<Integer, Integer> bst2,
-            @ForAll Integer key, @ForAll Integer value
-    ) {
-        return equivalent(
-                BST.union(bst1.insert(key, value), bst2),
-                BST.union(bst1, bst2).insert(key, value)
-        );
-    }
+@Property
+boolean union_insert(
+        @ForAll("trees") BST<Integer, Integer> bst2,
+        @ForAll("trees") BST<Integer, Integer> bst1,
+        @ForAll Integer key, @ForAll Integer value
+) {
+    return equivalent(
+            BST.union(bst1.insert(key, value), bst2),
+            BST.union(bst1, bst2).insert(key, value)
+    );
+}
 ```
 
 > We can argue that these two properties characterize the behaviour of union precisely (up to equivalence of trees), by induction on the size of union’s first argument. This idea is due to Claessen.
@@ -864,6 +864,11 @@ boolean insert_complete_for_union(
 > Together, these properties also justify our choice of generator — they show that we really can generate any tree constructable using the tree API. If we could not demonstrate that trees returned by delete and union can also be constructed using insert, then we could define a more complex generator for trees that uses all the API operations, rather than just insert — a workable approach, but considerably trickier, and harder to tune for a good distribution of test data.
 >           
 > Finally, we note that in these completeness properties, it is vital to check structural equality between trees, and not just equivalence. The whole point is to show that delete and union cannot construct otherwise unreachable shapes of trees, which might provoke bugs in the implementation.
+>
+> > __Summary:__ _Inductive properties relate a call of the function-under-test to calls with smaller arguments. A set of inductive properties covering all possible cases together test the base case(s) and induction step(s) of an inductive proof-of-correctness. If all the properties hold, then we know the function is correct – inductive properties together make up a complete test._
+
+
+[Comment: Updated to this point]::
 
 ### 4.5&nbsp;&nbsp; Model-based Properties
 
