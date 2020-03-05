@@ -1098,8 +1098,6 @@ boolean unique(@ForAll int x, @ForAll int y) {
 > If we were to choose x and y uniformly from the entire range of 64-bit integers, then ~~QuickCheck~~ _jqwik_ would never be able to falsify it, in practice. If we use ~~QuickCheck~~ _jqwik_’s built-in Int generator, then the property fails in around ~~3.3%~~ 0.2% of cases. Using the `keys` generator we have just defined, the property fails in ~~9.3%~~ 1% of cases. The choice of generator should be made on the basis of how important collisions are as test cases.
 
 
-[Comment: Updated to this point]::
-
 ## 5&nbsp;&nbsp; Bug Hunting
 
 > To evaluate the properties we have written, we created eight buggy implementations of binary search trees, with bugs ranging from subtle to blatant. These implementations are listed here:
@@ -1189,18 +1187,19 @@ had actually implemented. That's why the tables below are missing #6 and #7.
 
 ### 5.1&nbsp;&nbsp; Bug finding effectiveness
  
-> Validity properties miss many bugs (five of six), as do “preservation of equivalence” and “completeness of insertion” properties. In contrast, every bug is found by at least one postcondition, metamorphic property, and model-based property.
+> _Validity properties miss many bugs_ (five of six), as do “preservation of equivalence” and “completeness of insertion” properties. In contrast, every bug is found by at least one postcondition, metamorphic property, and model-based property.
 >
-> Invalid test data provokes false positives. Bug #2, which causes invalid trees to be generated as test cases, causes many properties that do not use insert to fail. This is why property `arbitrary_valid` is so important — when it fails, we need not waste time debugging false positives in properties unrelated to the bug. Because of these false positives, we ignore bug #2 in the rest of this discussion.
+> _Invalid test data provokes false positives._ Bug #2, which causes invalid trees to be generated as test cases, causes many properties that do not use insert to fail. This is why property `arbitrary_valid` is so important — when it fails, we need not waste time debugging false positives in properties unrelated to the bug. Because of these false positives, we ignore bug #2 in the rest of this discussion.
 
 In the _jqwik_ implementation bug #2 does not make generated trees invalid
 since duplicate keys are filtered out from the beginning.
 
-> Model-based properties are effective at finding bugs; each property tests just one operation, and finds every bug in that operation. In fact, the model-based properties together form a complete specification of the code, and so should be expected to find every bug.
+> _Model-based properties are effective at finding bugs;_ each property tests just one operation, and finds every bug in that operation. In fact, the model-based properties together form a complete specification of the code, and so should be expected to find every bug.
 >
-> Postconditions are quite effective; each postcondition for a buggy operation finds all the bugs we planted in it, but some postconditions are less effective than we might expect. For example, property `find_post_present` uses both find and insert, so we might expect it to reveal the three bugs in insert, but it reveals only two of them.
+> _Postconditions are quite effective;_ each postcondition for a buggy operation finds all the bugs we planted in it, but some postconditions are less effective than we might expect. For example, property `find_post_present` uses both find and insert, so we might expect it to reveal the three bugs in insert, but it reveals only two of them.
 >
-> Metamorphic properties are less effective individually, but powerful in combination. Weak properties miss bugs (compare each line ending in Weak with the line below), because their preconditions to exclude tricky test cases result in tricky bugs escaping detection. But even stronger-looking properties that we might expect to find bugs miss them — property `insert_delete` misses bug #1 in insert, property `delete_insert` misses bug #3 in insert, and so on. Degenerate metamorphic properties involving `nil` are particularly ineffective. Metamorphic properties are essentially an axiomatization of the API under test, and there is no guarantee that this axiomatization is complete, so some bugs might be missed altogether.
+> _Metamorphic properties are less effective individually_, but powerful in combination. Weak properties miss bugs (compare each line ending in Weak with the line below), because their preconditions to exclude tricky test cases result in tricky bugs escaping detection. But even stronger-looking properties that we might expect to find bugs miss them — property `insert_delete` misses bug #1 in insert, property `delete_insert` misses bug #3 in insert, and so on. Degenerate metamorphic properties involving `nil` are particularly ineffective. Metamorphic properties are essentially an axiomatization of the API under test, and there is no guarantee that this axiomatization is complete, so some bugs might be missed altogether.
+
 
 #### Differences between QuickCheck and _jqwik_ Bug Hunting Results
 
@@ -1230,7 +1229,7 @@ The text in this section is without any changes and without adaptation
 to the jqwik properties since I have _not_ replicated the 
 statistical analysis. I might do that later, though.
 
-> Hitherto we have discussed which properties can find bugs, given enough testing time. But it also matters how quickly a property can find a bug. We measured the mean time to failure across seven of the eight bugs (omitting bug #2), for every failing postcondition, (non-weak) metamorphic property, and model-based property. Each mean-time-to-failure was measured by testing the property 1,000 times with different random seeds, and taking the mean number of tests needed to provoke the failure. The results are summarized below:
+> Hitherto we have discussed which properties can find bugs, given enough testing time. But it also matters how quickly a property can find a bug. For seven of our eight bugs (omitting bug #2, which causes invalid test cases to be generated), and for each postcondition, metamorphic property, and model-based property that detects the bug, we found a counterexample to the property using QuickCheck 1,000 times with different random seeds, and recorded the mean number of tests needed to make that property fail for that bug. Note that finding a counterexample 1,000 times requires running far more than 1,000 random tests: we ran over 700,000 tests of the hardest-to-falsify property in total, in order to find a counterexample 1,000 times. We then averaged the mean-time-to-failure across all bugs, and all properties of the same type. The results are summarized below:
 >
 > |Property type|Min|Max|Mean|
 > |-------------|---|---|----|
@@ -1240,13 +1239,16 @@ statistical analysis. I might do that later, though.
 >
 > In this example model-based properties find bugs far faster than postconditions or metamorphic properties, while metamorphic properties find bugs a little faster than postconditions on average, but their mean time to failure varies more.
 > 
-> Digging a little deeper, for the same bug in union, `prop_UnionPost` fails after 50 tests on average, while `prop_UnionModel` fails after only 8.4 tests, even though they are logically equivalent. The reason is that after computing a union that is affected by the bug, the model-based property checks that the model of the result is correct — which requires every key and value to be correct. The post-condition, on the other hand, checks that a random key has the correct value in the result. Thus `prop_UnionPost` may exercise the bug many times without detecting it. Each model-based test may take a little longer to run, because it validates the result of union more thoroughly, but this is not significant compared to the enormous difference in the number of tests required to find the bug.
+> Digging a little deeper, for the same bug in union, `prop_UnionPost` fails after 50 tests on average, while `prop_UnionModel` fails after only 8.4 tests, _even though they are logically equivalent_. The reason is that after computing a union that is affected by the bug, the model-based property checks that the model of the result is correct — which requires every key and value to be correct. The post-condition, on the other hand, checks that a random key has the correct value in the result. Thus `prop_UnionPost` may exercise the bug many times without detecting it. Each model-based test may take a little longer to run, because it validates the result of union more thoroughly, but this is not significant compared to the enormous difference in the number of tests required to find the bug — the entire test case must be generated, and the union computed, in either case, so the difference in validation time is not really important.
 >
 
 ### 5.3&nbsp;&nbsp; Lessons
 
 > These results suggest that, if time is limited, then writing model-based properties may offer the best return on investment, in combination with validity properties to ensure we don’t encounter confusing failures caused by invalid data. In situations where the model is complex (and thus expensive) to define, or where the model resembles the implementation so closely that the same bugs are likely in each, then metamorphic properties offer an effective alternative, at the cost of writing many more properties.
 >
+
+
+[Comment: Updated to this point]::
 
 ## 6&nbsp;&nbsp; Discussion
 
