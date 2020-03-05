@@ -15,7 +15,8 @@ as tool and language of choice. Since quite some developers are not
 familiar with Haskell I want to transfer the examples into Java 
 using [jqwik](https://jqwik.net) as property testing library. 
 [John was kind enough](https://twitter.com/rjmh/status/1147034204439490560) 
-to allow me to use _his text_ enriched by my examples. His paper is published under [CC-BY license](https://creativecommons.org/licenses/by/2.0/) and so is my "remix".
+to allow me to use _his text_ enriched by my examples. His paper is published 
+under [CC-BY license](https://creativecommons.org/licenses/by/2.0/) and so is my "remix".
 
 You can also 
 [watch John present the same topic](https://www.youtube.com/watch?v=G0NUOst-53U)
@@ -55,8 +56,8 @@ striking through the original.
 Moreover, whenever the floating text referenced variables or functions
 from the code I used the names from the Java code.
 
-I tried to link all [bibliographic references](#references) correctly but only
-included some of the footnotes.
+I tried to replicate all [bibliographic references](#references) correctly 
+and added footnotes as internal or external links.
 
 #### The Code
 
@@ -96,21 +97,22 @@ You can find [all the code on github](https://github.com/jlink/how-to-specify-it
 
 ## 1&nbsp;&nbsp; Introduction
 
-> Property-based testing (PBT) is an approach to testing software by defining general properties that ought to hold of the code, and using (usually randomly) generated test cases to test that they do, while reporting minimized failing tests if they don’t. Pioneered by QuickCheck in Haskell [\[9\]](#9), the method is now supported by a variety of tools in many programming languages, and is increasingly popular in practice. Searching for “property-based testing” on Youtube finds many videos on the topic—most of the top 100 recorded at developer conferences and meetings, where (mostly) other people than this author present ideas, tools and methods for PBT, or applications that make use of it. Clearly, property-based testing is an idea whose time has come. But equally clearly, it is also poorly understood, requiring explanation over and over again!
+> Property-based testing (PBT) is an approach to testing software by defining general properties that ought to hold of the code, and using (usually randomly) generated test cases to test that they do, while reporting minimized failing tests if they don’t. Pioneered by [QuickCheck](http://hackage.haskell.org/package/QuickCheck) in Haskell [\[9\]](#9), the method is now supported by a variety of tools in many programming languages, and is increasingly popular in practice. Searching for “property-based testing” on Youtube finds many videos on the topic—most of the top 100 recorded at developer conferences and meetings, where (mostly) other people than this author present ideas, tools and methods for PBT, or applications that make use of it. Clearly, property-based testing is an idea whose time has come. But equally clearly, it is also poorly understood, requiring explanation over and over again!
 >
-> We have found that many developers trying property-based testing for the first time find it difficult to identify _properties to write_ — and find the simple examples in tutorials difficult to generalize. 
-> This is known as the oracle problem [\[3\]](#3), 
-> and it is common to all approaches that use test case generation.
+> We have found that many developers trying property-based testing for the first time find it difficult to identify _properties to write_ — and find the simple examples in tutorials difficult to generalize. This is known as the _oracle problem_ [\[3\]](#3), and it is common to all approaches that use test case generation.
 >
-> In this paper, therefore, we take a simple — but non-trivial — example of a purely functional data structure, and present five different approaches to writing properties(invariants, postconditions, metamorphic properties and the preservation of equivalence, inductive properties, and model-based properties). We show the necessity of testing the random generators and shrinkers that property-based testing has to offer.
+> In this paper, therefore, we take a simple — but non-trivial — example of a purely functional data structure, and present five different approaches to writing properties (invariants, postconditions, metamorphic properties and the preservation of equivalence, inductive properties, and model-based properties). We show the necessity of testing the random generators and shrinkers that property-based testing depends on. We discuss the pitfalls to keep in mind for each kind of property, and we compare and constrast their effectiveness, with the help of eight buggy implementations. We hope that the concrete advice presented here will enable readers to side-step the “where do I start?” question, navigate the zoo of different kinds of property, and quickly derive the benefits that property-based testing has to offer.
+>
 
 ## 2&nbsp;&nbsp; A Primer in Property-Based Testing 
 
 > Property-based testing is an approach to random testing pioneered by 
-> QuickCheck in Haskell [\[9\]](#9), in which universally quantified properties are evaluated as tests in randomly generated cases, and failing tests are simplified by a search for similar, smaller cases. 
+> [QuickCheck](http://hackage.haskell.org/package/QuickCheck) in Haskell [\[9\]](#9), in which universally quantified properties are evaluated as tests in randomly generated cases, and failing tests are simplified by a search for similar, smaller cases. 
 > There is no precise definition of the term: indeed, MacIver [writes](https://hypothesis.works/articles/what-is-property-based-testing/):
+>
 > > ‘Historically the definition of property-based testing has been “The thing that QuickCheck does”.’
-> The basic idea has been reimplemented many times — Wikipedia in 2019 lists more than 50 implementations, in 36 different programming languages, of all programming paradigms. Among contemporary PBT tools are, for example, ScalaCheck [\[20\]](#20) for the JVM, FsCheck for .NET, Quviq QuickCheck [\[2\]](#2)  [\[16\]](#16) and Proper [\[21\]](#21) [\[18\]](#18) for the BEAM, Hypothesis for Python, PrologCheck [\[1\]](#1) for Prolog, and SmallCheck [\[24\]](#24), SmartCheck [\[22\]](#22) and LeanCheck [\[4\]](#4) for Haskell, among many others. These implementations vary in quality and features, but the ideas in this paper — while presented using Haskell QuickCheck — should be relevant to a user of any of them.
+>
+> The basic idea has been reimplemented many times — Wikipedia in 2019 lists more than 50 implementations, in 36 different [programming languages](https://en.wikipedia.org/wiki/QuickCheck), of all programming paradigms. Among contemporary PBT tools are, for example, ScalaCheck [\[20\]](#20) for the JVM, [FsCheck](https://fscheck.github.io/FsCheck/) for .NET, Quviq QuickCheck [\[2\]](#2)  [\[16\]](#16) and Proper [\[21\]](#21) [\[18\]](#18) for the BEAM, [Hypothesis](https://pypi.org/project/hypothesis/) for Python, PrologCheck [\[1\]](#1) for Prolog, and SmallCheck [\[24\]](#24), SmartCheck [\[22\]](#22) and LeanCheck [\[4\]](#4) for Haskell, among many others. These implementations vary in quality and features, but the ideas in this paper — while presented using Haskell QuickCheck — should be relevant to a user of any of them.
 >
 > Suppose, then, that we need to test the `reverse` function on lists. 
 
@@ -118,7 +120,7 @@ Since JDK's `Collections.reverse` method changes the original list in place we'l
 that we actually use for testing:
 
 ```java
-List<T> reverse(List<T> original) {
+<T> List<T> reverse(List<T> original) {
     List<T> clone = new ArrayList<>(original);
     Collections.reverse(clone);
     return clone;
@@ -135,9 +137,9 @@ boolean reverseList() {
 } 
 ```
 
-`@Example` is _jqwik's_ equivalent to JUnit's `@Test`. Moreover it allows
-to return a boolean value to state success or failure of a test. For
-more complicated checks the assertion style of most Java test libraries
+`@Example` is _jqwik's_ equivalent to JUnit's `@Test`. Moreover it allows - 
+but does not require - to return a boolean value to state success or failure of a test. 
+For more complicated checks the assertion style of most Java test libraries
 is also supported.
 
 > This test is written in the same form as most test cases worldwide: we apply the function under test (`reverse`) to known arguments (1,2,3), and then compare the result to a known expected value (3,2,1). Developers are practiced in coming up with these examples, and predicting expected results. But what happens when we try to write a property instead?
@@ -213,7 +215,7 @@ sample = [[0, -1]]
 
 Here the `sample` line shows the value of `aList` for which the test failed: (0, -1).
 
-> Interestingly, the counterexample ~~QuickCheck~~ _jqwik_ reports for this property is always (0, -1) or (0, 1). These are not the random counterexamples that ~~QuickCheck~~ _jqwik_ finds first; they are the result of _shrinking_ the random counterexamples via a systematic greedy search for a simpler failing test. Shrinking lists tries to remove elements, and numbers shrink towards zero; the reason we see these two counterexamples is that `aList` must contain at least two different elements to falsify the property, and 0 and 1/-1 are the smallest pair of different integers. Shrinking is one of the most useful features of property-based testing, resulting in counterexamples which are usually easy to debug, because _every part_ of the counterexample is relevant to the failure.
+> Interestingly, the counterexample ~~QuickCheck~~ _jqwik_ reports for this property is always (0, -1), (0, 1), (-1, 0) or (1, 0). These are not the random counterexamples that ~~QuickCheck~~ _jqwik_ finds first; they are the result of _shrinking_ the random counterexamples via a systematic greedy search for a simpler failing test. Shrinking lists tries to remove elements, and numbers shrink towards zero; the reason we see these two counterexamples is that `aList` must contain at least two different elements to falsify the property, and 0 and 1/-1 are the smallest pair of different integers. Shrinking is one of the most useful features of property-based testing, resulting in counterexamples which are usually easy to debug, because _every part_ of the counterexample is relevant to the failure.
 >
 > Now we have seen the benefits of property-based testing — random generation of very many test cases, and shrinking of counterexamples to minimal failing tests — and the major pitfall: the temptation to replicate the implementation in the tests, incurring high costs for little benefit. In the remainder of this paper, In the remainder of this paper, we present systematic ways to define properties _without_ falling into this trap. We will (largely) ignore the question of how to generate _effective_ test cases — that are good at reaching buggy behaviour in the implementation under test — even though this is an active research topic in its own right (see, for example, the field of _concolic testing_ [\[12\]](#12) [\[25\]](#25). While generating good test cases is important, in the absence of good properties, they are of little value.
 
@@ -250,9 +252,10 @@ Moreover, the implementation follows a pattern rather unusual in Java:
 Every instance of a `BST` is immutable, i.e. the changing methods - `insert`, `delete` and `union` - return a new instance of `BST`. 
 An empty instance can be accessed through `BST.nil()`.
 
-> The operations we will test are those that create trees (nil, insert, delete and union), and that find the value associated with a key in the tree. We will also use auxiliary operations: toList, which returns a sorted list of the key-value pairs in the tree, and keys which is defined in terms of it. The implementation itself is standard, and is not included here.
+> The operations we will test are those that create trees (`nil`, `insert`, `delete` and `union`), and that find the value associated with a key in the tree. We will also use auxiliary operations: toList, which returns a sorted list of the key-value pairs in the tree, and keys which is defined in terms of it. The implementation itself is standard, and is not included here.
 >
-> Before writing properties of binary search trees, we must define a generator: 
+> Before writing properties of binary search trees, we must define a generator ~~and a shrinker~~ for this type.
+> We use the definitions below, which generate trees by creating a random list of keys and values and inserting them into the empty tree: 
 
 ```java
 import net.jqwik.api.Tuple.*;
@@ -278,7 +281,8 @@ Arbitrary<BST<Integer, Integer>> trees() {
 
 _Generators_ have type `Arbitrary` in _jqwik_; they are usually fed
 to properties through methods annotated with `@Provide`. 
-Shrinking behaviour is also automatically derived.
+Other than QuickCheck _jqwik_ almost never requires you to specify shrinking behaviour;
+it is also automatically derived from the generator itself.
 
 > We need to fix an instance type for testing; for the time being, we choose to let both keys and values be integers. ~~`Int`~~ `Integer` is usually an acceptably good choice as an instance for testing polymorphic properties, although we will return to this choice later.
 
@@ -359,7 +363,7 @@ boolean union_valid(
 }
 ``` 
 
-> However, these properties, by themselves, do not provide good testing for validity. To see why, let us plant a bug in insert, so that it creates duplicate entries when inserting a key that is already present (bug (2) in [section 5](#5-bug-hunting)). Property `insert_valid` fails as it should, but so do `delete_valid` and `union_valid`:
+> However, these properties, by themselves, do not provide good testing for validity. To see why, let us plant a bug in `insert`, so that it creates duplicate entries when inserting a key that is already present (bug (2) in [section 5](#5-bug-hunting)). Property `insert_valid` fails as it should, but so do `delete_valid` and `union_valid`:
 
 ```
 AssertionFailedError: Property [BST Properties:insert valid] 
@@ -390,9 +394,9 @@ AssertionFailedError: Property [BST Properties:union valid]
             right: NIL]
 ``` 
 
-> Thus, at first sight, there is nothing to indicate that the bug is in insert; all of insert, delete and union can return invalid trees! However, delete and union are given invalid trees as inputs in the tests above, and we cannot expect them to return valid trees in this case, so these reported failures are “false positives”.
+> Thus, at first sight, there is nothing to indicate that the bug is in `insert`; all of `insert`, `delete` and `union` can return invalid trees! However, `delete` and `unin` are given invalid trees as inputs in the tests above, and we cannot expect them to return valid trees in this case, so these reported failures are “false positives”.
 >
-> The problem here is that the generator for trees is producing invalid ones (because it is defined in terms of insert). We could add a precondition to each property, requiring the tree to be valid, as in:
+> The problem here is that the generator for trees is producing invalid ones (because it is defined in terms of `insert`). We could add a precondition to each property, requiring the tree to be valid, as in:
 
 ```java
 @Property
@@ -432,13 +436,13 @@ from generators and must not be implemented separately.
 >
 > > __Summary__: _Validity testing consists of defining a function to check the invariants of your datatypes, writing properties to test that your generators and shrinkers only produce valid results, and writing a property for each function under test that performs a single random call, and checks that the return value is valid._
 >
-> Validity properties are important to test, whenever a datatype has an invariant, but they are far from sufficient by themselves. Consider this: if every function returning a BST were defined to return nil in every case, then all the properties written so far would pass. insert could be defined to delete the key instead, or union could be defined to implement set difference — as long as the invariant is preserved, the properties will still pass. Thus, we must move on to properties that better capture the intended behaviour of each operation.
+> Validity properties are important to test, whenever a datatype has an invariant, but they are far from sufficient by themselves. Consider this: if every function returning a BST were defined to return `nil` in every case, then all the properties written so far would pass. `insert` could be defined to delete the key instead, or `union` could be defined to implement set difference — as long as the invariant is preserved, the properties will still pass. Thus, we must move on to properties that better capture the intended behaviour of each operation.
 
 ### 4.2&nbsp;&nbsp; Postconditions
 
 > __“Postconditions relate return values to arguments of a single call.”__
 >
-> A postcondition is a property that should be True after a call, or (equivalently, for a pure function) True of its result. Thus, we can define properties by asking ourselves “What should be True after calling f ?”. For example, after calling insert, then we should be able to find the key just inserted, and any previously inserted keys with unchanged values.
+> A postcondition is a property that should be _True_ after a call, or (equivalently, for a pure function) _True_ of its result. Thus, we can define properties by asking ourselves “What should be _True_ after calling _f_?”. For example, after calling `insert`, then we should be able to `find the key just inserted, and any previously inserted keys with unchanged values.
 
 ```java
 @Property
@@ -456,7 +460,7 @@ boolean insert_post(
 }
 ```
 
-> One may wonder whether it is best to parameterize this property on two different keys, or just on one: after all, for the type chosen, `key` and `otherKey` are equal in only around 3.3% of tests, so most test effort is devoted to checking that other keys than the one inserted are preserved. However, using the same key for `key` and `otherKey` would weaken the property drastically — for example, an implementation of insert that discarded the original tree entirely would still pass. Moreover, nothing hinders us from defining and testing a specialized property:
+> One may wonder whether it is best to parameterize this property on _two different_ keys, or just on one: after all, for the type chosen, `key` and `otherKey` are equal in only around 3.3% of tests, so most test effort is devoted to checking the __else__-branch in the property, namely that other keys than the one inserted are preserved. However, using the same key for `key` and `otherKey` would weaken the property drastically — for example, an implementation of `insert that discarded the original tree entirely would still pass. Moreover, nothing hinders us from defining and testing a specialized property:
 
 ```java
 @Property
@@ -468,9 +472,9 @@ boolean insert_post_same_key(
 }
 ```
 
-> Testing this property devotes all test effort to the case of finding a newly inserted key, but does not require us to replicate the code in the more general postcondition.
+> Testing this property devotes _all_ test effort to the case of finding a newly inserted key, but does not require us to replicate the code in the more general postcondition.
 >
-> We can write similar postconditions for delete and union; writing the property for union forces us to specify that union is left-biased (since union of finite maps cannot be commutative).
+> We can write similar postconditions for `delete` and `union`; writing the property for `union` forces us to specifythat `union` is left-biased (since union of finite maps cannot be commutative).
 
 ```java
 @Property
@@ -486,9 +490,9 @@ boolean union_post(
 }
 ```
 
-> Postconditions are not always as easy to write. For example, consider a postcondition for find. The return value is either `Optional.empty()`, in case the key is not found in the tree, or `Optional.of(v)`, in the case where it is present with value v. So it seems that, to write a postcondition for find, we need to be able to determine whether a given key is present in a tree, and if so, with what associated value. _But this is exactly what find does!_ So it seems we are in the awkward situation discussed in the introduction: in order to test find, we need to reimplement it.
+> Postconditions are not always as easy to write. For example, consider a postcondition for `find`. The return value is either `Optional.empty()`, in case the key is not found in the tree, or `Optional.of(v)`, in the case where it is present with value `v`. So it seems that, to write a postcondition for `find`, we need to be able to determine whether a given key is present in a tree, and if so, with what associated value. _But this is exactly what `find` does!_ So it seems we are in the awkward situation discussed in the introduction: in order to test `find`, we need to reimplement it.
 >
-> We can finesse this problem using a very powerful and general idea, that of constructing a test case whose outcome is easy to predict. In this case, we know that a tree must contain a key `key`, if we have just inserted it. Likewise, we know that a tree cannot contain a key `key`, if we have just deleted it. Thus we can write two postconditions for find, covering the two cases:
+> We can finesse this problem using a very powerful and general idea, that of constructing a test case whose outcome is easy to predict. In this case, we know that a tree must contain a key `key`, if we have just inserted it. Likewise, we know that a tree cannot contain a key `key`, if we have just deleted it. Thus we can write two postconditions for `find`, covering the two cases:
 
 ```java
 @Property
@@ -508,7 +512,7 @@ boolean find_post_absent(
 }
 ```
 
-> But there is a risk, when we write properties in this form, that we are only testing very special cases. Can we be certain that every tree, containing key `key` with value `value`, can be expressed in the form `tree.insert(key, value)`? Can we be certain that every tree not containing `key` can be expressed in the form `tree.delete(key)`? If not, then the postconditions we wrote for find may be less effective tests than we think.
+> But there is a risk, when we write properties in this form, that we are only testing very special cases. Can we be certain that every tree, containing key `key` with value `value`, can be expressed in the form `tree.insert(key, value)`? Can we be certain that every tree not containing `key` can be expressed in the form `tree.delete(key)`? If not, then the postconditions we wrote for `find` may be less effective tests than we think.
 >
 > Fortunately, for this data structure, every tree can be expressed in one of these two forms, because inserting a key that is already present, or deleting one that is not, is a no-op. We express this as another property to test:
 
@@ -533,7 +537,7 @@ boolean insert_delete_complete(
 
 > __“Related calls return related results.”__
 >
-> Metamorphic testing is a successful approach to the oracle 
+> _Metamorphic testing_ is a successful approach to the oracle 
 > problem in many contexts [\[7\]](#7). 
 > The basic idea is this: even if the expected result of a function call such as `tree.insert(key, value)` may be difficult to predict, we may still be able to express an expected relationship between this result, and the result of a related call. In this case, if we insert an additional key into `tree` before calling `insert(key, value)`, then we expect the additional key to appear in the result also. We formalize this as the following _metamorphic property_:
 
@@ -549,7 +553,7 @@ boolean insert_insert(
 }
 ```
 
-> A metamorphic property, like this one, (almost) always relates two calls to the function under test. Here the function under test is `insert`, and the two calls are `bst.insert(key2, value2)` and `bst.insert(key1, value1).insert(key2, value2)`. The latter is constructed by modifying the argument, in this case also using insert, and the property expresses an expected relationship between the values of the two calls. Metamorphic testing is a fruitful source of property ideas, since if we are given O(n) operations to test, each of which can also be used as a modifier, then there are potentially O(n<sup>2</sup>) properties that we can define.
+> A metamorphic property, like this one, (almost) always _relates two calls_ to the function under test. Here the function under test is `insert`, and the two calls are `bst.insert(key2, value2)` and `bst.insert(key1, value1).insert(key2, value2)`. The latter is constructed by modifying the argument, in this case also using `insert`, and the property expresses an expected relationship between the values of the two calls. Metamorphic testing is a fruitful source of property ideas, since if we are given O(n) operations to test, each of which can also be used as a modifier, then there are potentially O(n<sup>2</sup>) properties that we can define.
 >
 > However, the property above is not true: testing it yields:
 
@@ -589,7 +593,7 @@ checks = 2                    | # of not rejected calls
 sample = [0, 0, -1, 0, NIL]
 ```
 
-> Inspecting the two resulting trees, we can see that changing the order of insertion results in trees with different shapes, but containing the same keys and values. Arguably this does not matter: we should not care what shape of tree each operation returns, provided it contains the right information. To make our property pass, we must make this idea explicit. We therefore define an equivalence relation on trees that is true if they have the same contents,
+> Inspecting the two resulting trees, we can see that changing the order of insertion results in trees with different shapes, but containing the same keys and values. Arguably this does not matter: we should not care what shape of tree each operation returns, provided it contains [the right information](#f7). To make our property pass, we must make this idea explicit. We therefore define an equivalence relation on trees that is true if they have the same contents,
 
 ```java
 boolean equivalent(BST bst1, BST bst2) {
@@ -637,7 +641,7 @@ boolean insert_insert_weak(
 
 > This lets us keep the property in a simpler form, but is weaker, since it no longer captures that “the last insert wins”. We will return to this point later.
 >
-> We can go on to define further metamorphic properties for insert, with different modifiers — delete and union:
+> We can go on to define further metamorphic properties for `insert`, with different modifiers — `delete` and `union`:
 
 ```java
 @Property
@@ -666,13 +670,13 @@ boolean insert_union(
 }
 ```
 
-> and, in a similar way, metamorphic properties for the other functions in the API under test. We derived sixteen different properties in this way, which are ~~listed in Appendix A~~ [available on Github](https://github.com/jlink/how-to-specify-it/blob/master/src/test/java/htsi/bst/BST_Properties.java#L133). The trickiest case is union which, as a binary operation, can have either argument modified — or both. We also found that some properties could be motivated in more than one way. For example, property `insert_union` (above) can be motivated as a metamorphic test for insert, in which the argument is modified by union, or as a metamorphic test for union, in which the argument is modified by insert. Likewise, the metamorphic tests we wrote for find replicated the postconditions we wrote above for insert, delete and union. We do not see this as a problem: that there is more than one way to motivate a property does not make it any less useful, or any harder to come up with!
+> and, in a similar way, metamorphic properties for the other functions in the API under test. We derived sixteen different properties in this way, which are ~~listed in Appendix A~~ [available on Github](https://github.com/jlink/how-to-specify-it/blob/master/src/test/java/htsi/bst/BST_Properties.java#L133). The trickiest case is `union` which, as a binary operation, can have either argument modified — or both. We also found that some properties could be motivated in more than one way. For example, property `insert_union` (above) can be motivated as a metamorphic test for `insert`, in which the argument is modified by `union`, or as a metamorphic test for `union`, in which the argument is modified by `insert`. Likewise, the metamorphic tests we wrote for `find` replicated the postconditions we wrote above for `insert`, `delete` and `union`. We do not see this as a problem: that there is more than one way to motivate a property does not make it any less useful, or any harder to come up with!
 >
 > > __Summary:__ _A metamorphic property tests a single function by making (usually) two related calls, and checking the expected relationship between the two results._
 
 #### Preservation of Equivalence
 
-> Now that we have an equivalence relation on trees, we may wonder whether the operations under test preserve it. For example, we might try to test whether insert preserves equivalence as follows:
+> Now that we have an equivalence relation on trees, we may wonder whether the operations under test preserve it. For example, we might try to test whether `insert` preserves equivalence as follows:
 
 ```java
 @Property
@@ -704,7 +708,7 @@ tries = 1000                  | # of calls to property
 checks = 0                    | # of not rejected calls
 ```
 
-> To test this kind of property, we need to generate equivalent pairs of trees together. We can do so be defining a type of equivalent pairs, with a custom generator:
+> To test this kind of property, we need to _generate equivalent pairs of trees_ together. We can do so be defining a type of equivalent pairs, with a custom generator:
 
 ```java
 @Provide
@@ -785,7 +789,7 @@ boolean equivalent_trees_are_equivalent(
 
 > __“Inductive proofs inspire inductive tests.”__
 >
-> Metamorphic properties do not, in general, _completely_ specify the behaviour of the code under test. However, in some cases, a subset of metamorphic properties does form a complete specification. Consider, for example, the following two properties of union:
+> Metamorphic properties do not, in general, _completely_ specify the behaviour of the code under test. However, in some cases, a subset of metamorphic properties _does_ form a complete specification. Consider, for example, the following two properties of `union`:
 
 ```java
 @Property
@@ -806,9 +810,9 @@ boolean union_insert(
 }
 ```
 
-> We can argue that these two properties characterize the behaviour of union precisely (up to equivalence of trees), by induction on the size of union’s first argument. This idea is due to Claessen  [\[8\]](#8).
+> We can argue that these two properties characterize the behaviour of `union` precisely (up to equivalence of trees), by induction on the size of `union`’s first argument. This idea is due to Claessen  [\[8\]](#8).
 >
-> However, there is a hidden assumption in the argument above — namely, that any non-empty tree `bst` can be expressed in the form `bst2.insert(key, value)`, for some smaller tree `bst2`, or equivalently, that any tree can be constructed using insertions only. There is no reason to believe this a priori — it might be that some tree shapes can only be constructed by delete or union. So, to confirm that these two properties uniquely characterize union, we must test this assumption.
+> However, there is a hidden assumption in the argument above — namely, that any non-empty tree `bst` can be expressed in the form `bst2.insert(key, value)`, for some smaller tree `bst2`, or equivalently, that any tree can be constructed using insertions only. There is no reason to believe this a priori — it might be that some tree shapes can only be constructed by `delete` or `union`. So, to confirm that these two properties uniquely characterize `union`, we must test this assumption.
 > 
 > One way to do so is to define a function that maps a tree to a list of insertions that recreate it. It is sufficient to insert the key in each node before the keys in its subtrees:
 
@@ -839,7 +843,7 @@ boolean insert_complete(@ForAll("trees") BST<Integer, Integer> bst) {
 }
 ```
 
-> However, this is not sufficient! Recall that the generator we are using, defined in section 3, generates a tree by performing a list of insertions! It is clear that any such tree can be built using only insert, and so the property above can never fail, but what we need to know is that the same is true of trees returned by delete and union! We must thus define additional properties to test this:
+> However, this is not sufficient! Recall that the generator we are using, defined in section 3, generates a tree by performing a list of insertions! It is clear that any such tree can be built using only `insert`, and so the property above can never fail, but what we need to know is that the same is true of trees returned by `delete` and `union`! We must thus define additional properties to test this:
 
 ```java
 @Property
@@ -859,9 +863,9 @@ boolean insert_complete_for_union(
 }
 ```
 
-> Together, these properties also justify our choice of generator — they show that we really can generate any tree constructable using the tree API. If we could not demonstrate that trees returned by delete and union can also be constructed using insert, then we could define a more complex generator for trees that uses all the API operations, rather than just insert — a workable approach, but considerably trickier, and harder to tune for a good distribution of test data.
+> Together, these properties also justify our choice of generator — they show that we really can generate any tree constructable using the tree API. If we could not demonstrate that trees returned by `delete` and `union` can also be constructed using `insert`, then we could define a more complex generator for trees that uses all the API operations, rather than just `insert` — a workable approach, but considerably trickier, and harder to tune for a good distribution of test data.
 >           
-> Finally, we note that in these completeness properties, it is vital to check structural equality between trees, and not just equivalence. The whole point is to show that delete and union cannot construct otherwise unreachable shapes of trees, which might provoke bugs in the implementation.
+> Finally, we note that in these completeness properties, it is vital to check structural equality between trees, and not just equivalence. The whole point is to show that `delete` and `union` cannot construct otherwise unreachable shapes of trees, which might provoke bugs in the implementation.
 >
 > > __Summary:__ _Inductive properties relate a call of the function-under-test to calls with smaller arguments. A set of inductive properties covering all possible cases together test the base case(s) and induction step(s) of an inductive proof-of-correctness. If all the properties hold, then we know the function is correct – inductive properties together make up a complete test._
 
@@ -911,7 +915,7 @@ checks = 2                    | # of not rejected calls
 sample = [0, 0, [0=0]]
 ```
 
-> The problem is that the insertion function in Data.List may create duplicate elements, but insert for trees does not. So it is not quite the correct abstract implementation; we can correct this by deleting the key if it is initially present:
+> The problem is that the insertion function in `java.util.List` may create duplicate elements, but `insert` for trees does not. So it is not quite the correct abstract implementation; we can correct this by deleting the key if it is initially present:
 
 ```java
 @Property
@@ -1031,7 +1035,7 @@ void measure(
 
 > From the second table, we can see that `key` appears at the beginning or end of the keys in `bst` about ~~10%~~ 4.7% of the time for each case, while it appears somewhere in the middle of the sequences of keys ~~75%~~ 94% of the time. This looks quite reasonable. On the other hand, _in almost ~~80%~~ 90% of tests, key is not found in the tree at all!_
 >
-> For some of the properties we defined, this will result in quite inefficient testing. For example, consider the postcondition for insert:
+> For some of the properties we defined, this will result in quite inefficient testing. For example, consider the postcondition for `insert`:
 
 ```java
 @Property
@@ -1112,7 +1116,7 @@ boolean unique(@ForAll int x, @ForAll int y) {
 |8         |_union_ works correctly, except that when both trees contain the same key, the left argument does not always take priority.|
 
 In my bug hunting attempts I left out bugs #6 and #7 because the
-implementation of union they assume is completely different from what I 
+implementation of `union` they assume is completely different from what I 
 had actually implemented. That's why the tables below are missing #6 and #7.
 
 > The results of testing each property for each buggy version are:
@@ -1187,16 +1191,16 @@ had actually implemented. That's why the tables below are missing #6 and #7.
  
 > _Validity properties miss many bugs_ (five of six), as do “preservation of equivalence” and “completeness of insertion” properties. In contrast, every bug is found by at least one postcondition, metamorphic property, and model-based property.
 >
-> _Invalid test data provokes false positives._ Bug #2, which causes invalid trees to be generated as test cases, causes many properties that do not use insert to fail. This is why property `arbitrary_valid` is so important — when it fails, we need not waste time debugging false positives in properties unrelated to the bug. Because of these false positives, we ignore bug #2 in the rest of this discussion.
+> _Invalid test data provokes false positives._ Bug #2, which causes invalid trees to be generated as test cases, causes many properties that do not use `insert` to fail. This is why property `arbitrary_valid` is so important — when it fails, we need not waste time debugging false positives in properties unrelated to the bug. Because of these false positives, we ignore bug #2 in the rest of this discussion.
 
 In the _jqwik_ implementation bug #2 does not make generated trees invalid
 since duplicate keys are filtered out from the beginning.
 
 > _Model-based properties are effective at finding bugs;_ each property tests just one operation, and finds every bug in that operation. In fact, the model-based properties together form a complete specification of the code, and so should be expected to find every bug.
 >
-> _Postconditions are quite effective;_ each postcondition for a buggy operation finds all the bugs we planted in it, but some postconditions are less effective than we might expect. For example, property `find_post_present` uses both find and insert, so we might expect it to reveal the three bugs in insert, but it reveals only two of them.
+> _Postconditions are quite effective;_ each postcondition for a buggy operation finds all the bugs we planted in it, but some postconditions are less effective than we might expect. For example, property `find_post_present` uses both `find` and `insert`, so we might expect it to reveal the three bugs in `insert`, but it reveals only two of them.
 >
-> _Metamorphic properties are less effective individually_, but powerful in combination. Weak properties miss bugs (compare each line ending in Weak with the line below), because their preconditions to exclude tricky test cases result in tricky bugs escaping detection. But even stronger-looking properties that we might expect to find bugs miss them — property `insert_delete` misses bug #1 in insert, property `delete_insert` misses bug #3 in insert, and so on. Degenerate metamorphic properties involving `nil` are particularly ineffective. Metamorphic properties are essentially an axiomatization of the API under test, and there is no guarantee that this axiomatization is complete, so some bugs might be missed altogether.
+> _Metamorphic properties are less effective individually_, but powerful in combination. Weak properties miss bugs (compare each line ending in Weak with the line below), because their preconditions to exclude tricky test cases result in tricky bugs escaping detection. But even stronger-looking properties that we might expect to find bugs miss them — property `insert_delete` misses bug #1 in `insert`, property `delete_insert` misses bug #3 in `insert`, and so on. Degenerate metamorphic properties involving `nil` are particularly ineffective. Metamorphic properties are essentially an axiomatization of the API under test, and there is no guarantee that this axiomatization is complete, so some bugs might be missed altogether.
 
 
 #### Differences between QuickCheck and _jqwik_ Bug Hunting Results
@@ -1237,7 +1241,7 @@ statistical analysis. I might do that later, though.
 >
 > In this example model-based properties find bugs far faster than postconditions or metamorphic properties, while metamorphic properties find bugs a little faster than postconditions on average, but their mean time to failure varies more.
 > 
-> Digging a little deeper, for the same bug in union, `prop_UnionPost` fails after 50 tests on average, while `prop_UnionModel` fails after only 8.4 tests, _even though they are logically equivalent_. The reason is that after computing a union that is affected by the bug, the model-based property checks that the model of the result is correct — which requires every key and value to be correct. The post-condition, on the other hand, checks that a random key has the correct value in the result. Thus `prop_UnionPost` may exercise the bug many times without detecting it. Each model-based test may take a little longer to run, because it validates the result of union more thoroughly, but this is not significant compared to the enormous difference in the number of tests required to find the bug — the entire test case must be generated, and the union computed, in either case, so the difference in validation time is not really important.
+> Digging a little deeper, for the same bug in `union`, `prop_UnionPost` fails after 50 tests on average, while `prop_UnionModel` fails after only 8.4 tests, _even though they are logically equivalent_. The reason is that after computing a union that is affected by the bug, the model-based property checks that the model of the result is correct — which requires every key and value to be correct. The post-condition, on the other hand, checks that a random key has the correct value in the result. Thus `prop_UnionPost` may exercise the bug many times without detecting it. Each model-based test may take a little longer to run, because it validates the result of `union` more thoroughly, but this is not significant compared to the enormous difference in the number of tests required to find the bug — the entire test case must be generated, and the union computed, in either case, so the difference in validation time is not really important.
 >
 
 ### 5.3&nbsp;&nbsp; Lessons
@@ -1250,11 +1254,11 @@ statistical analysis. I might do that later, though.
 
 > Pre- and post-conditions were introduced by Hoare [\[15\]](#15) for the purpose of proving programs correct, inspired by Floyd [\[11\]](#11). The notion of a data representation invariant, which we use here for “validity testing”, comes from Hoare’s 1972 paper on proving data representations correct [\[14\]](#14). Pre- and post-conditions and invariants also form an integral part of Meyer’s “Design by Contract” approach to designing software [\[19\]](#19), in which an invariant is specified for each class, and pre- and post-conditions for each class method, and these can optionally be checked at run-time — for example during testing.
 >
-> Metamorphic testing was introduced by Chen, Cheung and Yiu as a way of deriving tests that do not require an oracle [\[6\]](#6). They consider, for example, an algorithm to find shortest-paths in a graph. While it is difficult to check whether a path found by the algorithm is actually shortest, it is easy to compare the path found from a node with the paths found from its neighbours, and check that it is no longer than the shortest path via a neighbour. As in this case, the key idea is to compare results from multiple invocations of the code-under-test, and check that an appropriate “metamorphic relation” holds between them. We have used equalities and equivalences as metamorphic relations in this paper, but the idea is much more general — for example, one might test that insert does not reduce the size of a tree, which would catch bugs that accidentally discard part of the structure. Metamorphic testing is useful in many contexts, and is now the subject of an annual workshop series8.
+> Metamorphic testing was introduced by Chen, Cheung and Yiu as a way of deriving tests that do not require an oracle [\[6\]](#6). They consider, for example, an algorithm to find shortest-paths in a graph. While it is difficult to check whether a path found by the algorithm is actually shortest, it is easy to compare the path found from a node with the paths found from its neighbours, and check that it is no longer than the shortest path via a neighbour. As in this case, the key idea is to compare results from multiple invocations of the code-under-test, and check that an appropriate “metamorphic relation” holds between them. We have used equalities and equivalences as metamorphic relations in this paper, but the idea is much more general — for example, one might test that `insert` does not reduce the size of a tree, which would catch bugs that accidentally discard part of the structure. Metamorphic testing is useful in many contexts, and is now the subject of an annual [workshop series](http://metwiki.net/MET19/).
 >
-> Metamorphic properties which are equations or equivalences are a form of algebraic specification [\[13\]](#13). Guttag and Horning divide the operations into those that return the type of interest (nil, insert, delete, and union, in our case), and observations that return a different type (find). They give conditions for “sufficient completeness”, meaning that the specification precisely determines the value of any observation.
+> Metamorphic properties which are equations or equivalences are a form of algebraic specification [\[13\]](#13). Guttag and Horning divide the operations into those that return the type of interest (`nil`, `insert`, `delete`, and `union`, in our case), and observations that return a different type (`find`). They give conditions for “sufficient completeness”, meaning that the specification precisely determines the value of any observation.
 >
-> We already saw that the idea behind model-based properties comes from Hoare’s seminal paper [\[14\]](#14). Using an abstract model as a specification is also at the heart of the Z specification language [\[26\]](#26), and the field of model-based testing [\[5\]](#5), an active research area with two workshop series devoted to it.
+> We already saw that the idea behind model-based properties comes from Hoare’s seminal paper [\[14\]](#14). Using an abstract model as a specification is also at the heart of the Z specification language [\[26\]](#26), and the field of model-based testing [\[5\]](#5), an active research area with two workshop series devoted [to](http://mbt-workshop.org/) [it](https://conf.researchr.org/series/a-most).
 >
 > The title of the paper is of course inspired by Polya’s classic book [\[23\]](#23).
 >
@@ -1277,7 +1281,7 @@ A direct transfer of this idea would require to wrap the implementing
 class - having a structural equality - within a public type that offers
 equivalence as equality.
 
-> The ideas in this paper are applicable to testing any pure code, but code with side-effects demands a somewhat different approach. In this case, every operation has an implicit “state” argument, and an invisible state result, making properties harder to formulate. Test cases are sequences of operations, to set up the state for each operation under test, and to observe changes made to the state afterwards. Nevertheless, the same ideas can be adapted to this setting; in particular, there are a number of state-machine modelling libraries for property-based testing tools that support a “model-based” approach in a stateful setting. State machine modelling is heavily used at Quviq AB for testing customer software, and an account of some of these examples can be found 
+> The ideas in this paper are applicable to testing any pure code, but code with side-effects demands a somewhat different approach. In this case, every operation has an implicit “state” argument, and an invisible state result, making properties harder to formulate. Test cases are sequences of operations, to set up the state for each operation under test, and to observe changes made to the state afterwards. Nevertheless, the same ideas can be adapted to this setting; in particular, there are a number of state-machine modelling libraries for property-based testing tools that support a “model-based” approach in a stateful setting. State machine modelling is heavily used at [Quviq AB](#f11) for testing customer software, and an account of some of these examples can be found 
 > in  [\[17\]](#17).
 
 The code examples in this articles have shown that the pure code approach
@@ -1402,7 +1406,13 @@ we might expect it _before_ execution.
 #### 26
 > J Michael Spivey. Understanding Z: a specification language and its formal semantics, volume 3. Cambridge University Press, 1988.
 
+## Footnotes
 
+#### F7
+> Recall that we have not imposed any balance condition on our trees. If we were to repeat this entire exercise for balanced trees, then we would need a stronger invariant to capture the balance condition, but we would still face the same problem in this property, since balance conditions don’t require a unique tree shape. Both trees in this example are balanced—they are just different balanced representations of the same information.
+
+#### F11
+> A company founded in 2006 by the author and Thomas Arts, to commercialize property based testing. See http://quviq.com
 
 ## Personal Addendum
 

@@ -26,8 +26,8 @@ class BSTUtils {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static boolean equivalent(BST bst1, BST bst2) {
-		return new HashSet<>(bst1.toList()).equals(new HashSet(bst2.toList()));
+	public static <K extends Comparable<K>, V> boolean equivalent(BST<K, V> bst1, BST<K, V> bst2) {
+		return new HashSet<>(bst1.toList()).equals(new HashSet<>(bst2.toList()));
 	}
 
 	// insertions Leaf = [ ]
