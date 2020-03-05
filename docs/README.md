@@ -1348,7 +1348,7 @@ we might expect it _before_ execution.
 > Koen Claessen. Inductive testing. Private communication; see slides at https://docs.google.com/presentation/d/1pejW9foV4ZAw5e03kYR3urNQsIPobomY_5HshxZQpLc/edit?usp=drivesdk
 
 #### 9
-> Koen Claessen and John Hughes. Quickcheck: A lightweight tool for random test- ing of haskell programs. In Proc. 5th ACM SIGPLAN Int. Conf. on Functional Programming, ICFP ’00, 2000.
+> Koen Claessen and John Hughes. Quickcheck: A lightweight tool for random testing of haskell programs. In Proc. 5th ACM SIGPLAN Int. Conf. on Functional Programming, ICFP ’00, 2000.
 
 
 #### 10
@@ -1388,7 +1388,7 @@ we might expect it _before_ execution.
 > Manolis Papadakis and Konstantinos Sagonas. A proper integration of types and function specifications with property-based testing. In Proceedings of the 10th ACM SIGPLAN workshop on Erlang, pages 39–50. ACM, 2011.
 
 #### 22
-> Lee Pike. Smartcheck: automatic and efficient counterexample reduction and gen- eralization. In Wouter Swierstra, editor, Proceedings of the 2014 ACM SIGPLAN symposium on Haskell, Gothenburg, Sweden, September 4-5, 2014, pages 53–64. ACM, 2014.
+> Lee Pike. Smartcheck: automatic and efficient counterexample reduction and generalization. In Wouter Swierstra, editor, Proceedings of the 2014 ACM SIGPLAN symposium on Haskell, Gothenburg, Sweden, September 4-5, 2014, pages 53–64. ACM, 2014.
 
 #### 23
 > G Polya. How to solve it! A system of thinking which can help you solve any problem. Princeton University Press, 1945.
