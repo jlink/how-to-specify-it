@@ -25,7 +25,7 @@ in his keynote for Lambda Days 2020.
 
 #### Changes I made to the original text
 
-This article is derived from the paper's PDF version - downloaded on March 1, 2020.
+This article is derived from the paper's PDF version - downloaded on March 2, 2020.
 John's original text
 
 > is formatted as quotation, 
@@ -1023,18 +1023,18 @@ void measure(
 
 ```
 [BST Properties:measure] (1000000) frequency = 
-    absent  (885816) : 89 %
-    present (114184) : 11 %
+    absent  (908425) : 91 %
+    present ( 91575) :  9 %
     
 [BST Properties:measure] (1000000) position = 
-    middle   (939638) : 93.96 %
-    at start ( 23300) :  2.33 %
-    at end   ( 23277) :  2.33 %
-    empty    ( 13775) :  1.38 %
-    just key (    10) :  0.00 %
+    middle   (465430) : 46.54 %
+    at start (261786) : 26.18 %
+    at end   (259956) : 26.00 %
+    empty    (  6973) :  0.70 %
+    just key (  5855) :  0.59 %
 ```
 
-> From the second table, we can see that `key` appears at the beginning or end of the keys in `bst` about ~~10%~~ 4.7% of the time for each case, while it appears somewhere in the middle of the sequences of keys ~~75%~~ 94% of the time. This looks quite reasonable. On the other hand, _in almost ~~80%~~ 90% of tests, key is not found in the tree at all!_
+> From the second table, we can see that `key` appears at the beginning or end of the keys in `bst` about ~~10%~~ 52% of the time for each case, while it appears somewhere in the middle of the sequences of keys ~~75%~~ 47% of the time. This looks quite reasonable. On the other hand, _in ~~almost 80%~~ 91% of tests, key is not found in the tree at all!_
 >
 > For some of the properties we defined, this will result in quite inefficient testing. For example, consider the postcondition for `insert`:
 
@@ -1054,7 +1054,7 @@ boolean insert_post(
 }
 ``` 
 
-> In almost 80% of tests `otherKey` will not be present in `bst`, and since `otherKey` is rarely equal to `key`, then in most of these cases both sides of the equation will be `Optional.empty()`. In effect, we spend most of our effort testing that inserting `key` does not insert an unrelated key `otherKey` into the tree! While this would be a serious bug if it occurred, it seems disproportionate to devote so much test effort to this kind of case.
+> In ~~almost 80%~~ 91% of tests `otherKey` will not be present in `bst`, and since `otherKey` is rarely equal to `key`, then in most of these cases both sides of the equation will be `Optional.empty()`. In effect, we spend most of our effort testing that inserting `key` does not insert an unrelated key `otherKey` into the tree! While this would be a serious bug if it occurred, it seems disproportionate to devote so much test effort to this kind of case.
 >
 > More reasonable would be to divide our test effort roughly equally between cases in which the given key does occur in the random tree, and cases in which it does not. We can achieve this by changing the generation of keys.  
 
@@ -1078,15 +1078,15 @@ This requires to both use this function the `trees()` generator method and chang
 
 ```
 [BST Properties:measure] (1000000) frequency = 
-    absent  (562002) : 56 %
-    present (437998) : 44 %
+    absent  (750153) : 75 %
+    present (249847) : 25 %
 
 [BST Properties:measure] (1000000) position = 
-    middle   (948398) : 94.84 %
-    at end   ( 18896) :  1.89 %
-    at start ( 18784) :  1.88 %
-    empty    ( 13892) :  1.39 %
-    just key (    30) :  0.00 %
+    middle   (478484) : 47.85 %
+    at start (256165) : 25.62 %
+    at end   (247565) : 24.76 %
+    just key ( 10837) :  1.08 %
+    empty    (  6949) :  0.69 %
 ```
 
 > This example illustrates that “collisions” (that is, cases in which we randomly choose the same value in two places) can be important test cases. Indeed, consider the following (obviously false) property:
@@ -1098,7 +1098,7 @@ boolean unique(@ForAll int x, @ForAll int y) {
 }
 ```
 
-> If we were to choose x and y uniformly from the entire range of 64-bit integers, then ~~QuickCheck~~ _jqwik_ would never be able to falsify it, in practice. If we use ~~QuickCheck~~ _jqwik_’s built-in Int generator, then the property fails in around ~~3.3%~~ 0.2% of cases. Using the `keys` generator we have just defined, the property fails in ~~9.3%~~ 1% of cases. The choice of generator should be made on the basis of how important collisions are as test cases.
+> If we were to choose x and y uniformly from the entire range of 64-bit integers, then ~~QuickCheck~~ _jqwik_ would never be able to falsify it, in practice. If we use ~~QuickCheck~~ _jqwik_’s built-in Int generator, then the property fails in around ~~3.3%~~ 0.8% of cases. Using the `keys` generator we have just defined, the property fails in ~~9.3%~~ 3% of cases. The choice of generator should be made on the basis of how important collisions are as test cases.
 
 
 ## 5&nbsp;&nbsp; Bug Hunting

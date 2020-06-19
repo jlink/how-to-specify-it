@@ -658,8 +658,14 @@ class BST_Properties {
 
 	@Property(afterFailure = AfterFailureMode.RANDOM_SEED)
 	@Disabled("supposed to fail")
-	boolean unique(@ForAll("keys") int x, @ForAll("keys") int y) {
-		//Statistics.collect(x == y);
+	boolean unique(
+			// @ForAll int x,
+			// @ForAll int y
+			@ForAll("keys") int x,
+			@ForAll("keys") int y
+	) {
+		// Statistics.collect(x == y);
+		// return true;
 		return x != y;
 	}
 
