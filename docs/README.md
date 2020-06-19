@@ -25,7 +25,9 @@ in his keynote for Lambda Days 2020.
 
 #### Changes I made to the original text
 
-This article is derived from the paper's PDF version - downloaded on March 2, 2020.
+This article is derived from the paper's PDF version - downloaded on June 19, 2020.
+The final authenticated version is available online
+at [link.springer.com](https://link.springer.com/chapter/10.1007%2F978-3-030-47147-7_4).
 John's original text
 
 > is formatted as quotation, 
