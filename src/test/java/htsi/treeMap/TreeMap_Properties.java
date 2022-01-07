@@ -45,7 +45,7 @@ class TreeMap_Properties {
 		return Arbitraries.oneOf(
 				Arbitraries.integers().between(0, 50),
 				Arbitraries.integers()
-		).unique();
+		);
 	}
 
 }

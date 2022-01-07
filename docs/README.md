@@ -265,10 +265,10 @@ import net.jqwik.api.Tuple.*;
 
 @Provide
 Arbitrary<BST<Integer, Integer>> trees() {
-    Arbitrary<Integer> keys = Arbitraries.integers().unique();
+    Arbitrary<Integer> keys = Arbitraries.integers();
     Arbitrary<Integer> values = Arbitraries.integers();
     Arbitrary<List<Tuple2<Integer, Integer>>> keysAndValues =
-            Combinators.combine(keys, values).as(Tuple::of).list();
+            Combinators.combine(keys, values).as(Tuple::of).list().uniqueElements(Tuple1::get1);
     
     // This could be implemented as streaming and reducing but
     // that would probably be less understandable to the mortal Java dev
@@ -716,10 +716,10 @@ checks = 0                    | # of not rejected calls
 ```java
 @Provide
 Arbitrary<Tuple2<BST, BST>> equivalentTrees() {
-    Arbitrary<Integer> keys = Arbitraries.integers().unique();
+    Arbitrary<Integer> keys = Arbitraries.integers();
     Arbitrary<Integer> values = Arbitraries.integers();
     Arbitrary<List<Tuple2<Integer, Integer>>> keysAndValues =
-            Combinators.combine(keys, values).as(Tuple::of).list();
+            Combinators.combine(keys, values).as(Tuple::of).list().uniqueElements(Tuple1::get1);
 
     return keysAndValues.map(keyValueList -> {
         BST<Integer, Integer> bst1 = BST.nil();
@@ -1070,7 +1070,7 @@ Arbitrary<Integer> keys() {
     return Arbitraries.oneOf(
             Arbitraries.integers().between(-25, 25),
             Arbitraries.integers()
-    ).unique();
+    );
 }
 ```
 

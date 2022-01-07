@@ -459,10 +459,10 @@ class BST_Properties {
 
 		@Provide
 		Arbitrary<Tuple2<BST, BST>> equivalentTrees() {
-			Arbitrary<Integer> keys = Arbitraries.integers().unique();
+			Arbitrary<Integer> keys = Arbitraries.integers();
 			Arbitrary<Integer> values = Arbitraries.integers();
 			Arbitrary<List<Tuple2<Integer, Integer>>> keysAndValues =
-					Combinators.combine(keys, values).as(Tuple::of).list();
+					Combinators.combine(keys, values).as(Tuple::of).list().uniqueElements(Tuple1::get1);
 
 			return keysAndValues.map(keyValueList -> {
 				BST<Integer, Integer> bst1 = BST.nil();
@@ -675,7 +675,7 @@ class BST_Properties {
 		// Arbitrary<Integer> keys = Arbitraries.integers().unique();
 		Arbitrary<Integer> values = Arbitraries.integers();
 		Arbitrary<List<Tuple2<Integer, Integer>>> keysAndValues =
-				Combinators.combine(keys, values).as(Tuple::of).list();
+				Combinators.combine(keys, values).as(Tuple::of).list().uniqueElements(Tuple1::get1);
 
 		// This could be implemented as streaming and reducing
 		// but that'd probably be less understandable
@@ -693,7 +693,7 @@ class BST_Properties {
 		return Arbitraries.oneOf(
 				Arbitraries.integers().between(-25, 25),
 				Arbitraries.integers()
-		).unique();
+		);
 	}
 
 }
