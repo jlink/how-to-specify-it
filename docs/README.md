@@ -397,7 +397,7 @@ AssertionFailedError: Property [BST Properties:union valid]
             right: NIL]
 ``` 
 
-> Thus, at first sight, there is nothing to indicate that the bug is in `insert`; all of `insert`, `delete` and `union` can return invalid trees! However, `delete` and `unin` are given invalid trees as inputs in the tests above, and we cannot expect them to return valid trees in this case, so these reported failures are “false positives”.
+> Thus, at first sight, there is nothing to indicate that the bug is in `insert`; all of `insert`, `delete` and `union` can return invalid trees! However, `delete` and `union` are given invalid trees as inputs in the tests above, and we cannot expect them to return valid trees in this case, so these reported failures are “false positives”.
 >
 > The problem here is that the generator for trees is producing invalid ones (because it is defined in terms of `insert`). We could add a precondition to each property, requiring the tree to be valid, as in:
 
